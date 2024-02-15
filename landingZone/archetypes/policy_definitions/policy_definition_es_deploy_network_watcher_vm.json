@@ -1,0 +1,138 @@
+{
+  "name": "Deploy-NetworkWatcher-VM",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "displayName": "Deploy network watcher on Virtual Machine",
+    "description": "Deploys the network watcher on  Virtual Machine when any  Virtual Machine. The Policy will set the network watcher on  Virtual Machine",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Monitoring",
+      "alzCloudEnvironments": [
+        "AzureCloud",
+        "AzureChinaCloud",
+        "AzureUSGovernment"
+      ]
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Compute/virtualMachines"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/type",
+                "in": [
+                  "NetworkWatcherAgentLinux",
+                  "NetworkWatcherAgentWindows"
+                ]
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/publisher",
+                "equals": "Microsoft.Azure.NetworkWatcher"
+              },
+              {
+                "field": "Microsoft.Compute/virtualMachines/extensions/provisioningState",
+                "equals": "Succeeded"
+              }
+            ]
+          },
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "vmName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "NWExtensionName": {
+                    "type": "string"
+                  },
+                  "NWExtensionType": {
+                    "type": "string"
+                  },
+                  "NWExtensionVersion": {
+                    "type": "string"
+                  },
+                  "NWExtensionPublisher": {
+                    "type": "string"
+                  }
+                },
+                "variables": {
+                  "NWExtensionType": "[if(equals(toLower(parameters('NWExtensionType')), 'windows'), 'NetworkWatcherAgentWindows', 'NetworkWatcherAgentLinux')]"
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Compute/virtualMachines/extensions",
+                    "name": "[concat(parameters('vmName'), '/', parameters('NWExtensionName'))]",
+                    "apiVersion": "2021-04-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "publisher": "[parameters('NWExtensionPublisher')]",
+                      "type": "[variables('NWExtensionType')]",
+                      "typeHandlerVersion": "[parameters('NWExtensionVersion')]",
+                      "autoUpgradeMinorVersion": true,
+                      "settings": {}
+                    }
+                  }
+                ],
+                "outputs": {}
+              },
+              "parameters": {
+                "vmName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "NWExtensionName": {
+                  "value": "AzureNetworkWatcherExtension"
+                },
+                "NWExtensionType": {
+                  "value": "[field('Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType')]"
+                },
+                "NWExtensionVersion": {
+                  "value": "1.4"
+                },
+                "NWExtensionPublisher": {
+                  "value": "Microsoft.Azure.NetworkWatcher"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

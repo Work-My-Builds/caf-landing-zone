@@ -23,7 +23,7 @@ locals {
                   default_local_network_gateway_id = ""
                   vpn_client_configuration         = []
                   bgp_settings = [{
-                    asn = 65515
+                    asn = 65051
                   }]
                   custom_route = []
                 }

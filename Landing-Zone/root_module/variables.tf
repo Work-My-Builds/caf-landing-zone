@@ -81,7 +81,7 @@ variable "management_resources_tags" {
 variable "onpremise_gateway_ip" {
   type        = string
   description = "On premise gateway IP address"
-  default     = "8.8.8.8"
+  default     = "13.86.4.229"
 }
 
 variable "onpremise_bgp_peering_settings" {
@@ -91,7 +91,7 @@ variable "onpremise_bgp_peering_settings" {
   })
   description = "On premise gateway BGP IP address"
   default = {
-    asn                 = 20201
-    bgp_peering_address = "10.10.10.10"
+    asn                 = 65050
+    bgp_peering_address = "10.1.1.254"
   }
 }

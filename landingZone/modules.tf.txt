@@ -1,0 +1,99 @@
+module "role_assignment1" {
+  for_each = {
+    for obj in local.users : "${obj.role_identifier}|${obj.user}" => obj
+  }
+
+  source = "../role_assignments"
+
+  name                  = each.value.role
+  scope                 = data.azurerm_subscription.subscription.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = data.azuread_user.user["${each.value.role_identifier}|${each.value.user}"].object_id
+}
+
+module "role_assignment2" {
+  for_each = {
+    for obj in local.users : "Key_Vault_Contributor|${obj.user}" => obj
+  }
+
+  source = "../role_assignments"
+
+  name                  = "Key Vault Contributor"
+  scope                 = azurerm_key_vault.kv.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = data.azuread_user.user["${each.value.role_identifier}|${each.value.user}"].object_id
+}
+
+module "role_assignment3" {
+  source = "../role_assignments"
+
+  name                  = "Log Analytics Contributor"
+  scope                 = data.azurerm_subscription.subscription.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}
+
+module "role_assignment4" {
+  source = "../role_assignments"
+
+  name                  = "Monitoring Contributor"
+  scope                 = data.azurerm_subscription.subscription.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}
+
+module "policy_assignments" {
+  source = "../policy_assignments"
+
+  location = var.location
+  policy_assignments = [
+    #{
+    #  policy_definition_id = "/providers/Microsoft.Management/managementGroups/e849153d-2958-41f5-b4d3-778b890e9fd2/providers/Microsoft.Authorization/policySetDefinitions/Deploy-Diagnostics-To-LogAnalytics"
+    #  identity_id          = var.policy_assignment_identity
+    #  parameters           = <<PARAMS
+    #    {
+    #      "logAnalytics": {
+    #        "value": "${module.monitoring_core.oms_id}"
+    #      }
+    #    }
+    #  PARAMS
+    #
+    #  management_group_id = []
+    #  subscription_id = [
+    #    data.azurerm_subscription.subscription.id
+    #  ]
+    #  resource_group_id = []
+    #  resource_id       = []
+    #},
+    {
+      policy_definition_id = "/providers/Microsoft.Authorization/policySetDefinitions/924bfe3a-762f-40e7-86dd-5c8b95eb09e6"
+      identity_id          = azurerm_user_assigned_identity.user_assigned_identity.id
+      parameters           = <<PARAMS
+        {
+          "bringYourOwnUserAssignedManagedIdentity": {
+            "value": true
+          },
+          "userAssignedManagedIdentityResourceGroup": {
+            "value": "${azurerm_resource_group.mon_rg.name}"
+          },
+          "userAssignedManagedIdentityName": {
+            "value": "${azurerm_user_assigned_identity.user_assigned_identity.name}"
+          },
+          "dcrResourceId": {
+            "value": "${azurerm_monitor_data_collection_rule.dcr.id}"
+          },
+          "enableProcessesAndDependencies": {
+            "value": true
+          }
+        }
+      PARAMS
+
+      management_group_id = []
+      subscription_id = [
+        data.azurerm_subscription.subscription.id
+      ]
+      resource_group_id = []
+      resource_id       = []
+    }
+  ]
+}

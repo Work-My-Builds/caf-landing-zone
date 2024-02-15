@@ -1,0 +1,49 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Deploy-Budget",
+  "dependsOn": [],
+  "properties": {
+    "description": "Deploy a default budget on all subscriptions under the assigned scope",
+    "displayName": "Deploy a default budget on all subscriptions under the assigned scope",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Budget",
+    "enforcementMode": "Default",
+    "parameters": {
+      "effect": {
+        "value": "DeployIfNotExists"
+      },
+      "budgetName": {
+        "value": "budget-set-by-policy"
+      },
+      "amount": {
+        "value": "${BudgetAmount}"
+      },
+      "timeGrain": {
+        "value": "Monthly"
+      },
+      "firstThreshold": {
+        "value": "90"
+      },
+      "secondThreshold": {
+        "value": "100"
+      },
+      "contactRoles": {
+        "value": [
+          "Owner",
+          "Contributor"
+        ]
+      },
+      "contactEmails": {
+        "value": ${BudgetContactEmails}
+      },
+      "contactGroups": {
+        "value": []
+      }
+    },
+    "scope": "${current_scope_resource_id}",
+    "notScopes": []
+  },
+  "identity": {
+    "type": "SystemAssigned"
+  },
+}

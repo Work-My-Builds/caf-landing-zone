@@ -1,0 +1,49 @@
+locals {
+  data_sources = jsondecode(file("${path.module}/assets/datacollectionrules.json")).data_sources
+
+  users = flatten([
+    for key, data in var.users : {
+      role            = key
+      role_identifier = replace(key, " ", "_")
+      user            = data
+    }
+  ])
+
+  geo_codes      = jsondecode(templatefile("${path.module}/assets/geo-codes.json", {}))
+  resource_codes = jsondecode(templatefile("${path.module}/assets/resource-codes.json", {}))
+  environment    = lower(var.environment) == "development" ? "dev" : (lower(var.environment) == "stage" ? "stg" : (lower(var.environment) == "test" ? "tst" : (lower(var.environment) == "production" ? "prd" : (lower(var.environment) == "prod" ? "prd" : lower(var.environment)))))
+
+
+  resource_group_name          = "${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-mon-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  log_analytics_workspace_name = "${var.prefix}-${local.resource_codes.resources["Log Analytics workspace"].abbreviation}-mon-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  user_assigned_identity_name  = "${var.prefix}-${local.resource_codes.resources["Managed identity"].abbreviation}-mon-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  data_collection_rule_name    = "${var.prefix}-${local.resource_codes.resources["Azure Monitor data collection rules"].abbreviation}-mon-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+
+  data_resource_group_name    = "${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-data-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  key_vault_name              = "${var.prefix}-${local.resource_codes.resources["Key vault"].abbreviation}-data-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  storage_account_name        = "${var.prefix}${local.resource_codes.resources["Storage account"].abbreviation}data${local.geo_codes.codes[var.location].shortName}${local.environment}01"
+  backup_vault_name           = "${var.prefix}-${local.resource_codes.resources["Backup vault"].abbreviation}-backup-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  recovery_service_vault_name = "${var.prefix}-${local.resource_codes.resources["Recovery Services vault"].abbreviation}-recovery-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+
+  vnet_resource_group_name = "${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+  virtual_network_name     = "${var.prefix}-${local.resource_codes.resources["Virtual network"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-01"
+
+
+
+  subnets = [
+    "${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-compute",
+    "${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-data",
+    "${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-pe",
+    "${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-network-${local.geo_codes.codes[var.location].shortName}-${local.environment}-web"
+  ]
+
+  delegation = {
+
+    name = "delegation"
+
+    service_delegation = {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}

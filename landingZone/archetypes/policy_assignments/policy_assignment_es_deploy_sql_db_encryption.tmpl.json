@@ -1,0 +1,23 @@
+{
+  "name": "Deploy-SQL-DB-Encryption",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2019-09-01",
+  "properties": {
+    "description": "Enables transparent data encryption on SQL databases.",
+    "displayName": "Deploy SQL DB transparent data encryption",
+    "notScopes": [],
+    "parameters": {},
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/86a912f6-9a06-4e26-b447-11b16ba8659f",
+    "nonComplianceMessages": [
+      {
+        "message": "SQL Server Security should be enabled."
+      }
+    ],
+    "scope": "${current_scope_resource_id}",
+    "enforcementMode": null
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Deny-FileServices-InsecureSmbChannel",
+  "dependsOn": [],
+  "properties": {
+    "description": "File Services with insecure SMB channel encryption should be denied",
+    "displayName": "This policy denies the use of insecure channel encryption (AES-128-CCM) when using File Services on a storage account.",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-FileServices-InsecureSmbChannel",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "File Services with insecure SMB channel encryption should be denied"
+      }
+    ],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      },
+      "notAllowedChannelEncryption": {
+        "value": "AES-128-CCM"
+      }
+    },
+    "scope": "${current_scope_resource_id}",
+    "notScopes": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "None"
+  }
+}

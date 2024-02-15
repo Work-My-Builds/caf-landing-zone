@@ -1,0 +1,24 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Audit-MachineLearning-PrivateEndpointId",
+  "dependsOn": [],
+  "properties": {
+    "description": "Audit private endpoints that are created in other subscriptions and/or tenants for Azure Machine Learning.",
+    "displayName": "Control private endpoint connections to Azure Machine Learning",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Audit-MachineLearning-PrivateEndpointId",
+    "enforcementMode": "Default",
+    "parameters": {
+      "effect": {
+        "value": "Audit"
+      }
+    },
+    "scope": "${current_scope_resource_id}",
+    "notScopes": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "None"
+  }
+}
+    

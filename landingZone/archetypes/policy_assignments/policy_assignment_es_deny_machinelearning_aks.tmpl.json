@@ -1,0 +1,28 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Deny-MachineLearning-Aks",
+  "dependsOn": [],
+  "properties": {
+    "description": "Deny AKS cluster creation in Azure Machine Learning",
+    "displayName": "Deny AKS cluster creation in Azure Machine Learning and enforce connecting to existing clusters.",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-MachineLearning-Aks",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "AKS cluster creation in Azure Machine Learning should be denied"
+      }
+    ],
+    "parameters": {
+      "effect": {
+        "value": "Deny"
+      }
+    },
+    "scope": "${current_scope_resource_id}",
+    "notScopes": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "None"
+  }
+}

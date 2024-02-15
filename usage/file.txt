@@ -1,0 +1,474 @@
+
+
+policy_assignment_es_audit_appgw_waf.tmpl.json
+effect=@{value=Audit}
+
+
+policy_assignment_es_audit_pednszones.tmpl.json
+effect=@{value=Audit}
+privateLinkDnsZones=@{value=System.Object[]}
+
+
+policy_assignment_es_audit_unusedresources.tmpl.json
+EffectDisks=@{value=Audit}
+EffectPublicIpAddresses=@{value=Audit}
+EffectServerFarms=@{value=Audit}
+
+
+policy_assignment_es_deny_classic_resources.tmpl.json
+effect=@{value=Deny}
+listOfResourceTypesNotAllowed=@{value=System.Object[]}
+
+
+policy_assignment_es_deny_databricks_public_ip.tmpl.json
+effect=@{value=Deny}
+
+
+policy_assignment_es_deny_databricks_sku.tmpl.json
+effect=@{value=Deny}
+
+
+policy_assignment_es_deny_databricks_vnet.tmpl.json
+effect=@{value=Deny}
+
+
+policy_assignment_es_deny_privileged_aks.tmpl.json
+effect=@{value=deny}
+
+
+policy_assignment_es_deny_priv_esc_aks.tmpl.json
+effect=@{value=deny}
+
+
+policy_assignment_es_deny_public_ip.tmpl.json
+effect=@{value=Deny}
+listOfResourceTypesNotAllowed=@{value=System.Object[]}
+
+
+policy_assignment_es_deny_resource_locations.tmpl.json
+listOfAllowedLocations=@{value=System.Object[]}
+
+
+policy_assignment_es_deny_resource_types.tmpl.json
+listOfResourceTypesNotAllowed=@{value=System.Object[]}
+
+
+policy_assignment_es_deny_rsg_locations.tmpl.json
+listOfAllowedLocations=@{value=System.Object[]}
+
+
+policy_assignment_es_deny_storage_http.tmpl.json
+effect=@{value=Deny}
+
+
+policy_assignment_es_deploy_azactivity_log.tmpl.json
+logAnalytics=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${root_scope_id}-la}
+logsEnabled=@{value=True}
+
+
+policy_assignment_es_deploy_azsqldb_auditing.tmpl.json
+logAnalyticsWorkspaceId=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.Operation
+alInsights/workspaces/${root_scope_id}-la}
+
+
+policy_assignment_es_deploy_mdendpoints.tmpl.json
+microsoftDefenderForEndpointLinuxArcAgentDeployEffect=@{value=DeployIfNotExists}
+microsoftDefenderForEndpointLinuxVmAgentDeployEffect=@{value=DeployIfNotExists}
+microsoftDefenderForEndpointWindowsArcAgentDeployEffect=@{value=DeployIfNotExists}
+microsoftDefenderForEndpointWindowsVmAgentDeployEffect=@{value=DeployIfNotExists}
+
+
+policy_assignment_es_deploy_mdfc_config.tmpl.json
+ascExportResourceGroupLocation=@{value=${default_location}}
+ascExportResourceGroupName=@{value=${root_scope_id}-asc-export}
+emailSecurityContact=@{value=security_contact@replace_me}
+enableAscForApis=@{value=Disabled}
+enableAscForAppServices=@{value=Disabled}
+enableAscForArm=@{value=Disabled}
+enableAscForContainers=@{value=Disabled}
+enableAscForCosmosDbs=@{value=Disabled}
+enableAscForCspm=@{value=Disabled}
+enableAscForDns=@{value=Disabled}
+enableAscForKeyVault=@{value=Disabled}
+enableAscForOssDb=@{value=Disabled}
+enableAscForServers=@{value=Disabled}
+enableAscForServersVulnerabilityAssessments=@{value=Disabled}
+enableAscForSql=@{value=Disabled}
+enableAscForSqlOnVm=@{value=Disabled}
+enableAscForStorage=@{value=Disabled}
+logAnalytics=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${root_scope_id}-la}
+vulnerabilityAssessmentProvider=@{value=default}
+
+
+policy_assignment_es_deploy_private_dns_zones.tmpl.json
+azureAcrPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azurecr.io}
+azureAppPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azconfig.io}
+azureAppServicesPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azurewebsites.net}
+azureAsrPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.siterecovery.windowsazure.com}
+azureAutomationDSCHybridPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azure-automation.net}
+azureAutomationWebhookPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azure-automation.net}
+azureBatchPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.${connectivity_location}.batch.azure.com}
+azureCognitiveSearchPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.search.windows.net}
+azureCognitiveServicesPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.cognitiveservices.azure.com}
+azureCosmosCassandraPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.cassandra.cosmos.azure.com}
+azureCosmosGremlinPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.gremlin.cosmos.azure.com}
+azureCosmosMongoPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.mongo.cosmos.azure.com}
+azureCosmosSQLPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.documents.azure.com}
+azureCosmosTablePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.table.cosmos.azure.com}
+azureDatabricksPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azuredatabricks.net}
+azureDataFactoryPortalPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.adf.azure.com}
+azureDataFactoryPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.datafactory.azure.net}
+azureDiskAccessPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.blob.core.windows.net}
+azureEventGridDomainsPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.eventgrid.azure.net}
+azureEventGridTopicsPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.eventgrid.azure.net}
+azureEventHubNamespacePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.servicebus.windows.net}
+azureFilePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.afs.azure.net}
+azureHDInsightPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azurehdinsight.net}
+azureIotHubsPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azure-devices.net}
+azureIotPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.azure-devices-provisioning.net}
+azureKeyVaultPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.vaultcore.azure.net}
+azureMachineLearningWorkspacePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.api.azureml.ms}
+azureMediaServicesKeyPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.media.azure.net}
+azureMediaServicesLivePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.media.azure.net}
+azureMediaServicesStreamPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.media.azure.net}
+azureMigratePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.prod.migration.windowsazure.com}
+azureMonitorPrivateDnsZoneId1=@{value=${private_dns_zone_prefix}privatelink.monitor.azure.com}
+azureMonitorPrivateDnsZoneId2=@{value=${private_dns_zone_prefix}privatelink.oms.opinsights.azure.com}
+azureMonitorPrivateDnsZoneId3=@{value=${private_dns_zone_prefix}privatelink.ods.opinsights.azure.com}
+azureMonitorPrivateDnsZoneId4=@{value=${private_dns_zone_prefix}privatelink.agentsvc.azure-automation.net}
+azureMonitorPrivateDnsZoneId5=@{value=${private_dns_zone_prefix}privatelink.blob.core.windows.net}
+azureRedisCachePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.redis.cache.windows.net}
+azureServiceBusNamespacePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.servicebus.windows.net}
+azureSignalRPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.service.signalr.net}
+azureStorageBlobPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.blob.core.windows.net}
+azureStorageBlobSecPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.blob.core.windows.net}
+azureStorageDFSPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.dfs.core.windows.net}
+azureStorageDFSSecPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.dfs.core.windows.net}
+azureStorageFilePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.file.core.windows.net}
+azureStorageQueuePrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.queue.core.windows.net}
+azureStorageQueueSecPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.queue.core.windows.net}
+azureStorageStaticWebPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.web.core.windows.net}
+azureStorageStaticWebSecPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.web.core.windows.net}
+azureSynapseDevPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.dev.azuresynapse.net}
+azureSynapseSQLODPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.sql.azuresynapse.net}
+azureSynapseSQLPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.sql.azuresynapse.net}
+azureWebPrivateDnsZoneId=@{value=${private_dns_zone_prefix}privatelink.webpubsub.azure.com}
+
+
+policy_assignment_es_deploy_resource_diag.tmpl.json
+logAnalytics=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${root_scope_id}-la}
+
+
+policy_assignment_es_deploy_sql_security.tmpl.json
+SqlDbAuditingSettingsDeploySqlSecurityEffect=@{value=DeployIfNotExists}
+SqlDbSecurityAlertPoliciesDeploySqlSecurityEffect=@{value=DeployIfNotExists}
+SqlDbTdeDeploySqlSecurityEffect=@{value=DeployIfNotExists}
+SqlDbVulnerabilityAssessmentsDeploySqlSecurityEffect=@{value=DeployIfNotExists}
+vulnerabilityAssessmentsEmail=@{value=}
+vulnerabilityAssessmentsStorageID=@{value=}
+
+
+policy_assignment_es_deploy_vmss_monitoring.tmpl.json
+logAnalytics_1=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${root_scope_id}-la}
+
+
+policy_assignment_es_deploy_vm_monitoring.tmpl.json
+logAnalytics_1=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/${root_scope_id}-mgmt/providers/Microsoft.OperationalInsights/workspaces/${root_scope_id}-la}
+
+
+policy_assignment_es_enable_ddos_vnet.tmpl.json
+ddosPlan=@{value=/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/${root_scope_id}-mgmt/providers/Microsoft.Network/ddosProtectionPlans/${root_scope_id}-ddos}
+effect=@{value=Modify}
+
+
+policy_assignment_es_enforce_aks_https.tmpl.json
+effect=@{value=deny}
+
+
+policy_assignment_es_enforce_alz_decomm.tmpl.json
+listOfResourceTypesAllowed=@{value=System.Object[]}
+
+
+policy_assignment_es_enforce_alz_sandbox.tmpl.json
+listOfResourceTypesNotAllowed=@{value=System.Object[]}
+
+
+
+
+
+
+logAnalyticWorkspaceID
+emailSecurityContact
+ascExportResourceGroupName
+ascExportResourceGroupLocation
+vulnerabilityAssessmentsEmail (array)
+vulnerabilityAssessmentsStorageID
+
+
+
+
+
+privatelink.afs.azure.net
+privatelink.azure-automation.net
+privatelink.azure-automation.net
+privatelink.documents.azure.com
+privatelink.mongo.cosmos.azure.com
+privatelink.cassandra.cosmos.azure.com
+privatelink.gremlin.cosmos.azure.com
+privatelink.table.cosmos.azure.com
+privatelink.datafactory.azure.net
+privatelink.adf.azure.com
+privatelink.azuredatabricks.net
+privatelink.azurehdinsight.net
+privatelink.prod.migration.windowsazure.com
+privatelink.blob.core.windows.net
+privatelink.blob.core.windows.net
+privatelink.queue.core.windows.net
+privatelink.queue.core.windows.net
+privatelink.file.core.windows.net
+privatelink.web.core.windows.net
+privatelink.web.core.windows.net
+privatelink.dfs.core.windows.net
+privatelink.dfs.core.windows.net
+privatelink.sql.azuresynapse.net
+privatelink.sql.azuresynapse.net
+privatelink.dev.azuresynapse.net
+privatelink.media.azure.net
+privatelink.media.azure.net
+privatelink.media.azure.net
+privatelink.monitor.azure.com
+privatelink.oms.opinsights.azure.com
+privatelink.ods.opinsights.azure.com
+privatelink.agentsvc.azure-automation.net
+privatelink.blob.core.windows.net
+privatelink.webpubsub.azure.com
+privatelink.${connectivity_location}.batch.azure.com
+privatelink.azconfig.io
+privatelink.siterecovery.windowsazure.com
+privatelink.azure-devices-provisioning.net
+privatelink.vaultcore.azure.net
+privatelink.service.signalr.net
+privatelink.azurewebsites.net
+privatelink.eventgrid.azure.net
+privatelink.blob.core.windows.net
+privatelink.cognitiveservices.azure.com
+privatelink.azure-devices.net
+privatelink.eventgrid.azure.net
+privatelink.redis.cache.windows.net
+privatelink.azurecr.io
+privatelink.servicebus.windows.net
+privatelink.api.azureml.ms
+privatelink.servicebus.windows.net
+privatelink.search.windows.net
+
+
+
+
+
+
+
+
+
+
+
+Deploy-MDFC-Config
+Deny-MgmtPorts-Internet
+Deny-DataB-Sku
+Deny-VNET-Peering-To-Non-Approved-VNETs
+Enforce-TLS-SSL
+Deny-Subnet-Without-Penp
+Enforce-GR-KeyVault
+Deny-DataB-Pip
+Deny-UDR-With-Specific-NextHop
+Deny-DataB-Vnet
+Deploy-Resource-Diag
+Deny-AppGW-Without-WAF
+DenyAction-DeleteProtection
+Deny-Public-Endpoints
+Enforce-ACSB
+Enforce-Encryption-CMK
+Deny-Subnet-Without-Nsg
+Deny-Private-DNS-Zones
+Audit-PeDnsZones
+Deploy-SQL-Security
+Audit-UnusedResources
+Deny-RDP-From-Internet
+Enforce-EncryptTransit
+
+
+
+
+
+
+
+
+
+Audit-Disks-UnusedResourcesCostOptimization
+Audit-PublicIpAddresses-UnusedResourcesCostOptimization
+DenyAction-DiagnosticLogs
+DenyAction-ActivityLogs
+Deploy-ASC-SecurityContacts
+Deploy-Sql-SecurityAlertPolicies
+Deploy-Sql-AuditingSettings
+Deploy-Sql-vulnerabilityAssessments
+Append-AppService-httpsonly
+Append-AppService-latestTLS
+Deny-AppServiceApiApp-http
+Deny-AppServiceFunctionApp-http
+Deny-AppServiceWebApp-http
+Deploy-MySQL-sslEnforcement
+Deny-MySql-http
+Deploy-PostgreSQL-sslEnforcement
+Deny-PostgreSql-http
+Append-Redis-sslEnforcement
+Append-Redis-disableNonSslPort
+Deny-Redis-http
+Deploy-SqlMi-minTLS
+Deny-SqlMi-minTLS
+Deploy-SQL-minTLS
+Deny-Sql-minTLS
+Deny-Storage-minTLS
+Deploy-Storage-sslEnforcement
+
+$policydey = @("Audit-Disks-UnusedResourcesCostOptimization","Audit-PublicIpAddresses-UnusedResourcesCostOptimization","DenyAction-DiagnosticLogs","DenyAction-ActivityLogs","Deploy-ASC-SecurityContacts","Deploy-Sql-SecurityAlertPolicies","Deploy-Sql-AuditingSettings","Deploy-Sql-vulnerabilityAssessments","Append-AppService-httpsonly","Append-AppService-latestTLS","Deny-AppServiceApiApp-http","Deny-AppServiceFunctionApp-http","Deny-AppServiceWebApp-http","Deploy-MySQL-sslEnforcement","Deny-MySql-http","Deploy-PostgreSQL-sslEnforcement","Deny-PostgreSql-http","Append-Redis-sslEnforcement","Append-Redis-disableNonSslPort","Deny-Redis-http","Deploy-SqlMi-minTLS","Deny-SqlMi-minTLS","Deploy-SQL-minTLS","Deny-Sql-minTLS","Deny-Storage-minTLS","Deploy-Storage-sslEnforcement")
+
+
+Deny-Subnet-Without-Nsg == True
+Deny-Subnet-Without-Penp == True
+Deny-AppGW-Without-WAF == True
+Deny-VNET-Peering-To-Non-Approved-VNETs == True
+Deny-RDP-From-Internet == True
+Deny-Subnet-Without-Udr == True
+Deny-UDR-With-Specific-NextHop == True
+SecurityCenterBuiltIn == True
+
+
+
+
+
+Deny-Priv-Esc-AKS == False
+Deploy-MDFC-SqlAtp == False
+Deploy-SQL-Threat == False
+Deny-Classic-Resources == False
+Deploy-VM-Backup == False
+Audit-AppGW-WAF == False
+Deploy-VMSS-Monitoring == False
+Deploy-AzActivity-Log == False
+Deny-Public-IP == False
+Deny-Resource-Locations == False
+Deny-RSG-Locations == False
+Deploy-AzSqlDb-Auditing == False
+Deny-Resource-Types == False
+Deploy-MDEndpoints == False
+Deploy-VM-Monitoring == False
+Deploy-SQL-DB-Auditing == False
+Deploy-ASC-Monitoring == False
+Audit-PeDnsZones == False
+Enforce-GR-KeyVault == False
+Deny-MgmtPorts-Internet == False
+Deploy-Resource-Diag == False
+Audit-UnusedResources == False
+Enforce-TLS-SSL == False
+Deploy-MDFC-Config == False
+Deny-DataB-Vnet == False
+Enforce-ACSB == False
+Deploy-MDFC-OssDb == False
+Deny-Privileged-AKS == False
+Deny-Storage-http == False
+Deny-IP-forwarding == False
+Deny-Public-IP-On-NIC == False
+Deploy-SQL-DB-Encryption == False
+Deploy-AKS-Policy == False
+Enforce-AKS-HTTPS == False
+Deny-UnmanagedDisk == False
+Enforce-Encryption-CMK == False
+DenyAction-DeleteProtection == False
+Enforce-EncryptTransit == False
+Deny-DataB-Pip == False
+Deny-Public-Endpoints == False
+Deny-DataB-Sku == False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Audit-MachineLearning-PrivateEndpointId == False
+Deny-AA-child-resources == False
+Deny-FileServices-InsecureAuth == False
+Deny-FileServices-InsecureKerberos == False
+Deny-FileServices-InsecureSmbChannel == False
+Deny-FileServices-InsecureSmbVersions == False
+Deny-MachineLearning-Aks == False
+Deny-MachineLearning-Compute-SubnetId == False
+Deny-MachineLearning-Compute-VmSize == False
+Deny-MachineLearning-ComputeCluster-RemoteLoginPortPublicAccess == False
+Deny-MachineLearning-ComputeCluster-Scale == False
+Deny-MachineLearning-HbiWorkspace == False
+Deny-MachineLearning-PublicAccessWhenBehindVnet == False
+Deny-MachineLearning-PublicNetworkAccess == False
+Deny-PublicEndpoint-MariaDB == False
+Deny-StorageAccount-CustomDomain == False
+Deploy-Budget == False
+
+
+
+
+
+
+Production Policy Not Deployed
+==============================
+Deny-Private-DNS-Zones
+Deny-UnmanagedDisk
+Deploy-Budget
+
+
+
+Non Production Policy Not Deployed
+==============================
+Enable-DDoS-VNET
+Deploy-MDFC-SqlAtp
+Deploy-VM-Backup
+Deploy-VMSS-Monitoring
+Deploy-AzActivity-Log
+Deny-Public-IP
+Deploy-AzSqlDb-Auditing
+Deny-Resource-Types
+Deploy-MDEndpoints
+Deploy-VM-Monitoring
+Deploy-ASC-Monitoring
+Enforce-GR-KeyVault
+Deny-MgmtPorts-Internet
+Deny-Subnet-Without-Nsg
+Deny-Subnet-Without-Penp
+Deny-VNET-Peering-To-Non-Approved-VNETs
+Deploy-MDFC-Config
+Enforce-ACSB
+Deny-Subnet-Without-Udr
+Deny-Private-DNS-Zones
+Deploy-MDFC-OssDb
+Deny-Privileged-AKS
+Deny-UnmanagedDisk
+DenyAction-DeleteProtection
