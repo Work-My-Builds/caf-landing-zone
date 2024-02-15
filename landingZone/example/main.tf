@@ -1,77 +1,69 @@
-#resource "azurerm_resource_group" "rg" {
-#  #provider = azurerm.identity
-#  name     = "Monitoring"
-#  location = "eastus"
-#}
-#
-#resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-#  #provider            = azurerm.identity
-#  location            = "eastus"
-#  name                = "Monitoring-Identity"
-#  resource_group_name = azurerm_resource_group.rg.name
-#}
-#
-#module "role_assignment1" {
-#  source = "../../role_assignments"
-#
-#  name                  = "Log Analytics Contributor"
-#  scope                 = "/providers/Microsoft.Management/managementGroups/    "
-#  role_definition_scope = "/providers/Microsoft.Management/managementGroups/    "
-#  principal_id          = azurerm_user_assigned_identity.user_assigned_identity.principal_id
-#
-#  #providers = {
-#  #  azurerm = azurerm.identity
-#  #}
-#}
-#
-#module "role_assignment2" {
-#  source = "../../role_assignments"
-#
-#  name                  = "Monitoring Contributor"
-#  scope                 = "/providers/Microsoft.Management/managementGroups/    "
-#  role_definition_scope = "/providers/Microsoft.Management/managementGroups/    "
-#  principal_id          = azurerm_user_assigned_identity.user_assigned_identity.principal_id
-#
-#  #providers = {
-#  #  azurerm = azurerm.identity
-#  #}
-#}
-#
-#module "set_subscription1" {
-#  source = "../"
-#
-#  management_group_name      = "testmgmgroup"
-#  subscription_id            = "subscription_id"
-#  policy_assignment_identity = azurerm_user_assigned_identity.user_assigned_identity.id
-#  location                   = "eastus"
-#  owner                      = "owner upn"
-#}
+module "root" {
+  source = "../../modules/policy"
 
-#module "set_subscription2" {
-#  source = "../"
-#
-#  management_group_name      = "management_group_name"
-#  subscription_id            = "subscription_id"
-#  policy_assignment_identity = azurerm_user_assigned_identity.user_assigned_identity.id
-#  location                   = "location"
-#  owner                      = ""
-#}
+  location            = var.location
+  prefix              = var.prefix
+  business_code       = "onl"
+  management_group_id = "/providers/Microsoft.Management/managementGroups/testmg"
+  subscription_id     = "/subscriptions/subscription_id"
+  #users                             = var.users
+  enable_role_definitions   = true
+  enable_policy_definitions = true
+  #enable_policy_assignments         = true
+  #BudgetContactEmails               = var.BudgetContactEmails
+  #BudgetAmount                      = var.BudgetAmount
+  #vulnerabilityAssessmentsEmail     = var.vulnerabilityAssessmentsEmail
+  #logAnalyticWorkspaceID            = var.logAnalyticWorkspaceID
+  #emailSecurityContact              = var.emailSecurityContact
+  #ascExportResourceGroupName        = var.ascExportResourceGroupName
+  #vulnerabilityAssessmentsStorageID = var.vulnerabilityAssessmentsStorageID
+  #enable_network                    = var.enable_network
+  #enable_monitoring                 = var.enable_monitoring
+  #virtual_network                   = var.virtual_network
+}
 
+module "online" {
+  source = "../../modules/policy"
 
-module "set_subscription" {
-  #for_each = {
-  #  for sub in local.subscription_object: sub.subcription_name => sub
-  #}
+  location            = var.location
+  prefix              = var.prefix
+  business_code       = "onl"
+  management_group_id = "/providers/Microsoft.Management/managementGroups/testmg"
+  subscription_id     = "/subscriptions/subscription_id"
+  #users                             = var.users
+  #enable_role_definitions           = true
+  #enable_policy_definitions         = true
+  enable_policy_assignments = true
+  #BudgetContactEmails               = var.BudgetContactEmails
+  #BudgetAmount                      = var.BudgetAmount
+  #vulnerabilityAssessmentsEmail     = var.vulnerabilityAssessmentsEmail
+  #logAnalyticWorkspaceID            = var.logAnalyticWorkspaceID
+  #emailSecurityContact              = var.emailSecurityContact
+  #ascExportResourceGroupName        = var.ascExportResourceGroupName
+  #vulnerabilityAssessmentsStorageID = var.vulnerabilityAssessmentsStorageID
+  enable_network    = true
+  enable_monitoring = true
+  virtual_network = {
+    enable_hub_network = true
+    subnets = [
+      "compute:24",
+      "pe:28",
+      "data:24",
+      "web:28"
+    ]
+    //peered_vnet_id                 = null
+    network_address_space   = ["10.0.0.0/16"]
+    network_dns_address     = []
+    ddos_protection_plan_id = "ddos_id"
+    onpremise_gateway_ip    = "100.100.100.100"
+    onpremise_address_space = []
+    onpremise_bgp_peering_settings = [{
+      asn                 = 20120
+      bgp_peering_address = "10.0.0.20"
+    }]
+  }
 
-  source = "../"
-
-  subscription_name     = local.subscription1.subcription_name
-  environment           = local.subscription1.environment
-  management_group_name = local.subscription1.management_group_name
-  subscription_id       = local.subscription1.subscription_id
-  users                 = local.subscription1.users
-  location              = var.location
-  prefix                = var.prefix
-  enable_network        = local.subscription1.enable_network
-  network_address_space = local.subscription1.network_address_space
+  providers = {
+    azurerm = azurerm.online
+  }
 }
