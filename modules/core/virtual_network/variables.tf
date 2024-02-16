@@ -38,6 +38,7 @@ variable "network_dns_address" {
 
 variable "ddos_protection_plan_id" {
   type = string
+  default = null
 }
 
 variable "vnet_id" {

@@ -4,6 +4,17 @@ resource "azurerm_user_assigned_identity" "user_assigned_identity" {
   resource_group_name = azurerm_resource_group.mon_rg.name
 }
 
+module "role_assignment" {
+  source = "../role_assignments"
+
+  for_each = toset(local.role_definitions)
+
+  name                  = each.value
+  scope                 = data.azurerm_subscription.subscription.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}
+
 resource "azurerm_log_analytics_workspace" "oms" {
   name                = local.log_analytics_workspace_name
   location            = azurerm_resource_group.mon_rg.location

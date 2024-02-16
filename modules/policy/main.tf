@@ -99,6 +99,7 @@ resource "azurerm_subscription_policy_assignment" "policy_assignment" {
 
   depends_on = [
     azurerm_policy_definition.policy_definition,
-    azurerm_policy_set_definition.policy_set_definition
+    azurerm_policy_set_definition.policy_set_definition,
+    module.monitoring
   ]
 }

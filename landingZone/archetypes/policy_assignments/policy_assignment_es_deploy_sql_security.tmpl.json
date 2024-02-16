@@ -14,7 +14,7 @@
     ],
     "parameters": {
       "vulnerabilityAssessmentsEmail": {
-        "value": ${vulnerabilityAssessmentsEmail}
+        "value": ["${vulnerabilityAssessmentsEmail}"]
       },
       "vulnerabilityAssessmentsStorageID": {
         "value": "${vulnerabilityAssessmentsStorageID}"

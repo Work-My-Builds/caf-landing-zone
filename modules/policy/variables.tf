@@ -39,19 +39,14 @@ variable "enable_policy_assignments" {
   default = false
 }
 
-variable "BudgetContactEmails" {
-  type = list(string)
-  default = [""]
-}
-
-variable "BudgetAmount" {
-  type = string
-  default = "1000"
+variable "exclude_policy_assignments" {
+  type    = list(string)
+  default = []
 }
 
 variable "vulnerabilityAssessmentsEmail" {
-  type = list(string)
-  default = [""]
+  type = string
+  default = ""
 }
 
 variable "logAnalyticWorkspaceID" {

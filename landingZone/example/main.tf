@@ -34,8 +34,10 @@ module "online" {
   #enable_role_definitions           = true
   #enable_policy_definitions         = true
   enable_policy_assignments = true
-  #BudgetContactEmails               = var.BudgetContactEmails
-  #BudgetAmount                      = var.BudgetAmount
+  exclude_policy_assignments = [
+    "Deploy-MDFC-SqlAtp",
+    "Deploy-VM-Backup"
+  ]
   #vulnerabilityAssessmentsEmail     = var.vulnerabilityAssessmentsEmail
   #logAnalyticWorkspaceID            = var.logAnalyticWorkspaceID
   #emailSecurityContact              = var.emailSecurityContact

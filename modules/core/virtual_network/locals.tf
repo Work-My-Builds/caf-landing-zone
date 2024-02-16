@@ -19,10 +19,14 @@ locals {
   #)
 
   address_cidr = split("/", var.network_address_space[0])[1]
+  subnet_cidrs = [
+    for cidr in var.subnets : tonumber(split(":", cidr)[1] - local.address_cidr)
+  ]
+
   subnets = flatten(
     [for sub in toset(var.subnets) : {
       name     = lower(split(":", sub)[0]) == "AzureFirewallSubnet" || lower(split(":", sub)[0]) == "AzureFirewallManagementSubnet" || lower(split(":", sub)[0]) == "AzureBastionSubnet" || lower(split(":", sub)[0]) == "GatewaySubnet" ? lower(split(":", sub)[0]) : lower("${local.subnet_prefix}-${lower(split(":", sub)[0])}")
-      new_bits = split(":", sub)[1] - local.address_cidr
+      address_prefixes = cidrsubnets(var.network_address_space[0], local.subnet_cidrs[*]...)[index(var.subnets, sub)]
       }
     ]
   )

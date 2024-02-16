@@ -22,4 +22,16 @@ locals {
   storage_account_name        = lower("${var.prefix}${local.resource_codes.resources["Storage account"].abbreviation}${local.geo_codes.codes[var.location].shortName}${var.business_code}${local.environment}01")
   backup_vault_name           = lower("${var.prefix}-${local.resource_codes.resources["Backup vault"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
   recovery_service_vault_name = lower("${var.prefix}-${local.resource_codes.resources["Recovery Services vault"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
+
+  role_definitions = [
+    "Monitoring Contributor",
+    "Log Analytics Contributor",
+    "Security Admin",
+    "Contributor",
+    "Network Contributor",
+    "SQL Security Manager",
+    "SQL Server Contributor",
+    "Storage Account Contributor",
+    "SQL Managed Instance Contributor"
+  ]
 }

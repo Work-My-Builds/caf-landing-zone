@@ -18,21 +18,31 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = var.network_address_space
   dns_servers         = var.network_dns_address
 
-  ddos_protection_plan {
-    id     = var.enable_hub_network == true ? azurerm_network_ddos_protection_plan.ddos[0].id : var.ddos_protection_plan_id
-    enable = true
+  #dsdos_protection_plan {
+  #  id     = var.enable_hub_network == true ? azurerm_network_ddos_protection_plan.ddos[0].id : var.ddos_protection_plan_id
+  #  enable = true
+  #}
+
+  dynamic "ddos_protection_plan" {
+    for_each = (var.enable_hub_network == true && var.ddos_protection_plan_id == null) || var.ddos_protection_plan_id != null ? [1] : [0]
+    iterator = ddos
+
+    content {
+      id     = var.enable_hub_network == true ? azurerm_network_ddos_protection_plan.ddos[0].id : var.ddos_protection_plan_id
+      enable = true
+    }
   }
 }
 
 resource "azurerm_subnet" "subnet" {
   for_each = {
-    for subnet in module.subnet_addrs.networks : subnet.name => subnet
+    for subnet in local.subnets : subnet.name => subnet
   }
 
   name                 = each.value.name
   resource_group_name  = azurerm_virtual_network.vnet.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [each.value.cidr_block]
+  address_prefixes     = [each.value.address_prefixes]
 
   dynamic "delegation" {
     for_each = lower(split("-", each.value.name)[length(split("-", each.value.name)) - 1]) == "web" ? [1] : []

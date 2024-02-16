@@ -5,7 +5,7 @@ variable "location" {
 
 variable "prefix" {
   type    = string
-  default = "vumc"
+  default = "business name"
 }
 
 

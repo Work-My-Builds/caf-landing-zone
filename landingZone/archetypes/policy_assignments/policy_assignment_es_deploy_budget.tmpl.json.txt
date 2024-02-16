@@ -2,6 +2,7 @@
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2022-06-01",
   "name": "Deploy-Budget",
+  "location": "${default_location}",
   "dependsOn": [],
   "properties": {
     "description": "Deploy a default budget on all subscriptions under the assigned scope",
@@ -34,7 +35,7 @@
         ]
       },
       "contactEmails": {
-        "value": ${BudgetContactEmails}
+        "value": ["${BudgetContactEmails}"]
       },
       "contactGroups": {
         "value": []
@@ -45,5 +46,5 @@
   },
   "identity": {
     "type": "SystemAssigned"
-  },
+  }
 }

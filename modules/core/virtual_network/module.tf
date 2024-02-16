@@ -1,10 +1,10 @@
-module "subnet_addrs" {
-  source  = "hashicorp/subnets/cidr"
-  version = "1.0.0"
-
-  base_cidr_block = var.network_address_space[0]
-  networks        = local.subnets
-}
+#module "subnet_addrs" {
+#  source  = "hashicorp/subnets/cidr"
+#  version = "1.0.0"
+#
+#  base_cidr_block = var.network_address_space[0]
+#  networks        = local.subnets
+#}
 
 module "virtual_network_gateway" {
   source = "../virtual_network_gateway"

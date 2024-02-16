@@ -23,14 +23,12 @@ locals {
         root_scope_resource_id            = "${var.management_group_id}"
         current_scope_resource_id         = "${var.subscription_id}"
         default_location                  = "${var.location}"
-        logAnalyticWorkspaceID            = "${var.logAnalyticWorkspaceID}"
+        logAnalyticWorkspaceID            = var.enable_monitoring != true ? "" : "${data.azurerm_subscription.subscription.id}/resourceGroups/${module.monitoring[0].log_analytics_workspace_rg_name}/providers/Microsoft.OperationalInsights/workspaces/${module.monitoring[0].log_analytics_workspace_name}"
         emailSecurityContact              = "${var.emailSecurityContact}"
-        ascExportResourceGroupName        = "${var.ascExportResourceGroupName}"
+        ascExportResourceGroupName        = var.enable_monitoring != true ? "" : "${module.monitoring[0].log_analytics_workspace_rg_name}"
         ascExportResourceGroupLocation    = "${var.location}"
-        vulnerabilityAssessmentsEmail     = jsonencode(var.vulnerabilityAssessmentsEmail)
-        vulnerabilityAssessmentsStorageID = "${var.vulnerabilityAssessmentsStorageID}"
-        BudgetAmount                      = "${var.BudgetAmount}"
-        BudgetContactEmails               = jsonencode(var.BudgetContactEmails)
+        vulnerabilityAssessmentsEmail     = "${var.vulnerabilityAssessmentsEmail}"
+        vulnerabilityAssessmentsStorageID = var.enable_monitoring != true ? "" : "${data.azurerm_subscription.subscription.id}/resourceGroups/${module.monitoring[0].storage_account_rg_name}/Microsoft.Storage/storageAccounts/${module.monitoring[0].storage_account_name}"
       }))
     ]
   )
@@ -47,7 +45,7 @@ locals {
         parameters             = assign.properties.parameters != {} ? jsonencode(assign.properties.parameters) : null
         scope                  = assign.properties.scope
         identity               = assign.identity.type != "None" ? assign.identity : {}
-      } if var.enable_policy_assignments != false
+      } if var.enable_policy_assignments != false && !contains(var.exclude_policy_assignments, assign.name)
     ]
   )
 }
