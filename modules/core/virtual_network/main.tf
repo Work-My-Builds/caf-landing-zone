@@ -18,11 +18,6 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = var.network_address_space
   dns_servers         = var.network_dns_address
 
-  #dsdos_protection_plan {
-  #  id     = var.enable_hub_network == true ? azurerm_network_ddos_protection_plan.ddos[0].id : var.ddos_protection_plan_id
-  #  enable = true
-  #}
-
   dynamic "ddos_protection_plan" {
     for_each = (var.enable_hub_network == true && var.ddos_protection_plan_id == null) || var.ddos_protection_plan_id != null ? [1] : [0]
     iterator = ddos

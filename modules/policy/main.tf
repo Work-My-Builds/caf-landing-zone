@@ -1,3 +1,9 @@
+# Add subscription to management group
+resource "azurerm_management_group_subscription_association" "mg_subscription_association" {
+  management_group_id = data.azurerm_management_group.management_group.id
+  subscription_id     = data.azurerm_subscription.subscription.id
+}
+
 # Create Azure Role Defition
 resource "azurerm_role_definition" "role_definition" {
   for_each = {

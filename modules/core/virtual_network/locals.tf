@@ -3,30 +3,30 @@ locals {
   resource_codes = jsondecode(templatefile("${path.root}/assets/resource-codes.json", {}))
   environment    = lower(terraform.workspace) == "development" ? "dev" : (lower(terraform.workspace) == "stage" ? "stg" : (lower(terraform.workspace) == "test" ? "tst" : (lower(terraform.workspace) == "production" ? "prd" : (lower(terraform.workspace) == "prod" ? "prd" : lower(terraform.workspace)))))
 
-
   vnet_resource_group_name = lower("${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
   ddos_name                = lower("${var.prefix}-${local.resource_codes.resources["DDOS Protection plan"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
   virtual_network_name     = lower("${var.prefix}-${local.resource_codes.resources["Virtual network"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
 
   subnet_prefix = lower("${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}")
-  #subnets = flatten(
-  #  [for sub in toset(var.subnets) : {
-  #    sub              = lower(split(":", sub)[0])
-  #    subnet_name      = lower(split(":", sub)[0]) == "AzureFirewallSubnet" || lower(split(":", sub)[0]) == "AzureFirewallManagementSubnet" || lower(split(":", sub)[0]) == "AzureBastionSubnet" || lower(split(":", sub)[0]) == "GatewaySubnet" ? lower(split(":", sub)[0]) : lower("${local.subnet_prefix}-${lower(split(":", sub)[0])}")
-  #    address_prefixes = split(":", sub)[1]
-  #    }
-  #  ]
-  #)
 
   address_cidr = split("/", var.network_address_space[0])[1]
   subnet_cidrs = [
     for cidr in var.subnets : tonumber(split(":", cidr)[1] - local.address_cidr)
   ]
 
+  hub_subnets = [
+    "AzureFirewallSubnet:24",
+    "AzureFirewallManagementSubnet:24",
+    "AzureBastionSubnet:24",
+    "GatewaySubnet:24"
+  ]
+
+  network_subnet = var.enable_hub_network == true ? local.hub_subnets : var.subnets
+
   subnets = flatten(
-    [for sub in toset(var.subnets) : {
-      name     = lower(split(":", sub)[0]) == "AzureFirewallSubnet" || lower(split(":", sub)[0]) == "AzureFirewallManagementSubnet" || lower(split(":", sub)[0]) == "AzureBastionSubnet" || lower(split(":", sub)[0]) == "GatewaySubnet" ? lower(split(":", sub)[0]) : lower("${local.subnet_prefix}-${lower(split(":", sub)[0])}")
-      address_prefixes = cidrsubnets(var.network_address_space[0], local.subnet_cidrs[*]...)[index(var.subnets, sub)]
+    [for sub in toset(local.network_subnet) : {
+      name             = lower(split(":", sub)[0]) == "AzureFirewallSubnet" || lower(split(":", sub)[0]) == "AzureFirewallManagementSubnet" || lower(split(":", sub)[0]) == "AzureBastionSubnet" || lower(split(":", sub)[0]) == "GatewaySubnet" ? lower(split(":", sub)[0]) : lower("${local.subnet_prefix}-${lower(split(":", sub)[0])}")
+      address_prefixes = cidrsubnets(var.network_address_space[0], local.subnet_cidrs[*]...)[index(local.network_subnet, sub)]
       }
     ]
   )
@@ -42,7 +42,7 @@ locals {
   }
 
   private_link_dns_zone_by_service = [
-    "privatelink.azure-api.net", 
+    "privatelink.azure-api.net",
     "privatelink.developer.azure-api.net",
     "privatelink.azconfig.io",
     "privatelink.his.arc.azure.com",
@@ -112,9 +112,9 @@ locals {
   ]
 
   private_dns_zones = flatten(
-    [ for dns in toset(local.private_link_dns_zone_by_service):
+    [for dns in toset(local.private_link_dns_zone_by_service) :
       {
-        dns = dns
+        dns                   = dns
         private_dns_zone_name = dns
       } if var.enable_hub_network == true
     ]

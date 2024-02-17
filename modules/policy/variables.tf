@@ -1,11 +1,3 @@
-variable "location" {
-  type = string
-}
-
-variable "management_group_id" {
-  type = string
-}
-
 variable "prefix" {
   type = string
 }
@@ -14,13 +6,20 @@ variable "business_code" {
   type = string
 }
 
+variable "management_group_id" {
+  type = string
+}
 
 variable "subscription_id" {
   type = string
 }
 
-variable "users" {
-  type = map(string)
+variable "location" {
+  type = string
+}
+
+variable "user_data" {
+  type    = map(string)
   default = {}
 }
 
@@ -44,28 +43,38 @@ variable "exclude_policy_assignments" {
   default = []
 }
 
+variable "enable_monitoring" {
+  type    = bool
+  default = false
+}
+
+variable "enable_backup" {
+  type    = bool
+  default = false
+}
+
 variable "vulnerabilityAssessmentsEmail" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "logAnalyticWorkspaceID" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "emailSecurityContact" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "ascExportResourceGroupName" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "vulnerabilityAssessmentsStorageID" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -74,14 +83,13 @@ variable "enable_network" {
   default = false
 }
 
-variable "enable_monitoring" {
+variable "enable_hub_network" {
   type    = bool
   default = false
 }
 
 variable "virtual_network" {
   type = object({
-    enable_hub_network             = optional(string, false)
     subnets                        = optional(list(string), [])
     peered_vnet_id                 = optional(string, null)
     network_address_space          = optional(list(string), [])
@@ -93,7 +101,6 @@ variable "virtual_network" {
   })
 
   default = {
-    enable_hub_network             = false
     subnets                        = []
     peered_vnet_id                 = null
     network_address_space          = []

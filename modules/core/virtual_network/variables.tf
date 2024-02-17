@@ -37,7 +37,7 @@ variable "network_dns_address" {
 }
 
 variable "ddos_protection_plan_id" {
-  type = string
+  type    = string
   default = null
 }
 
