@@ -9,6 +9,8 @@ module "group_role_assignment" {
   scope                 = data.azurerm_subscription.subscription.id
   role_definition_scope = data.azurerm_subscription.subscription.id
   principal_id          = data.azuread_group.group["${each.value.group}|${each.value.role_identifier}"].object_id
+
+  depends_on = [ azurerm_role_definition.role_definition ]
 }
 
 module "user_role_assignment" {
