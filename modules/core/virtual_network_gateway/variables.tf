@@ -19,6 +19,10 @@ variable "vnet_id" {
   type = string
 }
 
+variable "subnet_ids" {
+  type = list(string)
+}
+
 variable "onpremise_gateway_ip" {
   type = string
 }

@@ -8,6 +8,7 @@ module "virtual_network_gateway" {
   environment                    = var.environment
   location                       = var.location
   vnet_id                        = azurerm_virtual_network.vnet.id
+  subnet_ids                     = [ for sub in azurerm_subnet.subnet: sub.id ]
   onpremise_gateway_ip           = var.onpremise_gateway_ip
   onpremise_address_space        = var.onpremise_address_space
   onpremise_bgp_peering_settings = var.onpremise_bgp_peering_settings

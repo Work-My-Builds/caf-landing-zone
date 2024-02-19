@@ -9,4 +9,6 @@ locals {
   vpn_public_ip_address_name                 = lower("${var.prefix}-${local.resource_codes.resources["Public IP address"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
   firewall_public_ip_address_name            = lower("${var.prefix}-${local.resource_codes.resources["Public IP address"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-02")
   firewall_management_public_ip_address_name = lower("${var.prefix}-${local.resource_codes.resources["Public IP address"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-03")
+
+  subnet_ids = var.subnet_ids
 }
