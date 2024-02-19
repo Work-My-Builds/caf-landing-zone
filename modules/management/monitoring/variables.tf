@@ -1,3 +1,8 @@
+variable "root_scope_resource_id" {
+  type    = string
+  default = ""
+}
+
 variable "management_group_id" {
   type = string
 }
@@ -15,11 +20,15 @@ variable "business_code" {
   type = string
 }
 
+variable "environment" {
+  type = string
+}
+
 variable "location" {
   type = string
 }
 
-variable "policy_assignment_to_exclude" {
+variable "policy_definition_depencies" {
   type    = list(string)
   default = []
 }

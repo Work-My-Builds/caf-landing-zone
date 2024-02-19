@@ -12,7 +12,7 @@ resource "azurerm_role_definition" "role_definition" {
   }
 
   name        = each.value.properties.roleName
-  scope       = var.management_group_id
+  scope       = local.root_scope_resource_id
   description = each.value.properties.description
 
   permissions {
@@ -34,7 +34,7 @@ resource "azurerm_policy_definition" "policy_definition" {
   mode                = title(each.value.properties.mode)
   display_name        = each.value.properties.displayName
   description         = each.value.properties.description
-  management_group_id = var.management_group_id
+  management_group_id = local.root_scope_resource_id
 
   metadata    = jsonencode(each.value.properties.metadata)
   policy_rule = jsonencode(each.value.properties.policyRule)
@@ -51,7 +51,7 @@ resource "azurerm_policy_set_definition" "policy_set_definition" {
   display_name        = each.value.properties.displayName
   policy_type         = each.value.properties.policyType
   description         = each.value.properties.description
-  management_group_id = var.management_group_id
+  management_group_id = local.root_scope_resource_id
 
   parameters = jsonencode(each.value.properties.parameters) != "{}" ? "${jsonencode(each.value.properties.parameters)}" : null
 
@@ -60,7 +60,7 @@ resource "azurerm_policy_set_definition" "policy_set_definition" {
     iterator = pdr
 
     content {
-      policy_definition_id = replace(pdr.value.policyDefinitionId, "$${root_scope_resource_id}", var.management_group_id)
+      policy_definition_id = replace(pdr.value.policyDefinitionId, "$${root_scope_resource_id}", local.root_scope_resource_id)
       reference_id         = pdr.value.policyDefinitionReferenceId
       parameter_values     = jsonencode(pdr.value.parameters)
     }
@@ -98,8 +98,7 @@ resource "azurerm_subscription_policy_assignment" "policy_assignment" {
     for_each = each.value.identity
 
     content {
-      type         = var.enable_monitoring == true ? "UserAssigned" : "SystemAssigned"
-      identity_ids = var.enable_monitoring == true ? [module.monitoring[0].identity_id] : null
+      type = "SystemAssigned"
     }
   }
 

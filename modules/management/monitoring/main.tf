@@ -3,10 +3,21 @@ resource "azurerm_resource_group" "mon_rg" {
   location = var.location
 }
 
+resource "azurerm_management_lock" "rg_lock" {
+  name       = "CanNotDelete-RG-Level"
+  scope      = azurerm_resource_group.mon_rg.id
+  lock_level = "CanNotDelete"
+  notes      = "This Resource Group and it's resources can not be deleted"
+}
+
 resource "azurerm_user_assigned_identity" "uai" {
   name                = local.user_assigned_identity_name
   location            = azurerm_resource_group.mon_rg.location
   resource_group_name = azurerm_resource_group.mon_rg.name
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 module "role_assignment" {
@@ -39,6 +50,10 @@ resource "azurerm_storage_account" "sa" {
   resource_group_name      = azurerm_resource_group.mon_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 resource "azurerm_monitor_data_collection_rule" "dcr" {

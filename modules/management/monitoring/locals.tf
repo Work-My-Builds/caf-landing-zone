@@ -3,13 +3,12 @@ locals {
 
   geo_codes      = jsondecode(templatefile("${path.root}/assets/geo-codes.json", {}))
   resource_codes = jsondecode(templatefile("${path.root}/assets/resource-codes.json", {}))
-  environment    = lower(terraform.workspace) == "development" ? "dev" : (lower(terraform.workspace) == "stage" ? "stg" : (lower(terraform.workspace) == "test" ? "tst" : (lower(terraform.workspace) == "production" ? "prd" : (lower(terraform.workspace) == "prod" ? "prd" : lower(terraform.workspace)))))
 
-  mon_resource_group_name      = lower("${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
-  log_analytics_workspace_name = lower("${var.prefix}-${local.resource_codes.resources["Log Analytics workspace"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
-  user_assigned_identity_name  = lower("${var.prefix}-${local.resource_codes.resources["Managed identity"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
-  data_collection_rule_name    = lower("${var.prefix}-${local.resource_codes.resources["Azure Monitor data collection rules"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${local.environment}-01")
-  storage_account_name         = lower("${var.prefix}${local.resource_codes.resources["Storage account"].abbreviation}${local.geo_codes.codes[var.location].shortName}${var.business_code}${local.environment}01")
+  mon_resource_group_name      = lower("${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-02")
+  log_analytics_workspace_name = lower("${var.prefix}-${local.resource_codes.resources["Log Analytics workspace"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-02")
+  user_assigned_identity_name  = lower("${var.prefix}-${local.resource_codes.resources["Managed identity"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-02")
+  data_collection_rule_name    = lower("${var.prefix}-${local.resource_codes.resources["Azure Monitor data collection rules"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-02")
+  storage_account_name         = lower("${var.prefix}${local.resource_codes.resources["Storage account"].abbreviation}${local.geo_codes.codes[var.location].shortName}${var.business_code}${var.environment}02")
 
   role_definitions = [
     "Monitoring Contributor",
@@ -25,7 +24,7 @@ locals {
   policy_assignments = flatten(
     [for file in fileset("${path.root}", "archetypes/policy_assignments/monitoring/*.json") :
       jsondecode(templatefile("${path.root}/${file}", {
-        root_scope_resource_id            = "${var.management_group_id}"
+        root_scope_resource_id            = "${var.root_scope_resource_id}"
         current_scope_resource_id         = "${var.subscription_id}"
         default_location                  = "${var.location}"
         logAnalyticWorkspaceID            = "${data.azurerm_subscription.subscription.id}/resourceGroups/${local.mon_resource_group_name}/providers/Microsoft.OperationalInsights/workspaces/${local.log_analytics_workspace_name}"
@@ -50,7 +49,7 @@ locals {
         parameters             = assign.properties.parameters != {} ? jsonencode(assign.properties.parameters) : null
         scope                  = assign.properties.scope
         identity               = assign.identity.type != "None" ? assign.identity : {}
-      } if !contains(var.policy_assignment_to_exclude, assign.name)
+      }
     ]
   )
 }

@@ -1,3 +1,16 @@
+variable "root_scope_resource_id" {
+  type    = string
+  default = ""
+}
+
+variable "management_group_id" {
+  type = string
+}
+
+variable "subscription_id" {
+  type = string
+}
+
 variable "prefix" {
   type        = string
   description = "Prefix of the name of the all resources"
@@ -7,8 +20,17 @@ variable "business_code" {
   type = string
 }
 
+variable "environment" {
+  type = string
+}
+
 variable "location" {
   type = string
+}
+
+variable "exclude_policy_assignments" {
+  type    = list(string)
+  default = []
 }
 
 variable "enable_hub_network" {
@@ -22,8 +44,8 @@ variable "subnets" {
 }
 
 variable "peered_vnet_id" {
-  type    = string
-  default = null
+  type    = list(string)
+  default = []
 }
 
 variable "network_address_space" {

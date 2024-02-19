@@ -5,6 +5,7 @@ module "virtual_network_gateway" {
 
   prefix                         = var.prefix
   business_code                  = var.business_code
+  environment                    = var.environment
   location                       = var.location
   vnet_id                        = azurerm_virtual_network.vnet.id
   onpremise_gateway_ip           = var.onpremise_gateway_ip

@@ -8,8 +8,22 @@ terraform {
 }
 
 provider "azurerm" {
-  #alias                      = "identity"
+  alias                      = "default"
   skip_provider_registration = true
-  subscription_id            = "sub id"
+  subscription_id            = "subscription_id"
+  features {}
+}
+
+provider "azurerm" {
+  alias                      = "hub"
+  skip_provider_registration = true
+  subscription_id            = "subscription_id"
+  features {}
+}
+
+provider "azurerm" {
+  alias                      = "workload"
+  skip_provider_registration = true
+  subscription_id            = "subscription_id"
   features {}
 }

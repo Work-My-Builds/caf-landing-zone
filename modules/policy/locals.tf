@@ -1,35 +1,61 @@
 locals {
-  users = flatten([
-    for user, role in var.user_data : {
-      role            = role
-      role_identifier = replace(role, " ", "_")
-      user            = user
-    }
-  ])
+  root_scope_resource_id = "/providers/Microsoft.Management/managementGroups/${var.root_scope_resource_id}"
+  management_group_id    = "/providers/Microsoft.Management/managementGroups/${var.management_group_id}"
+  subscription_id        = "/subscriptions/${var.subscription_id}"
 
-  role_definitions = flatten(
-    [for file in fileset("${path.root}", "archetypes/role_definitions/*.json") :
-      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", var.management_group_id))
+  environment = lower(var.environment) == "development" ? "dev" : (lower(var.environment) == "stage" ? "stg" : (lower(var.environment) == "test" ? "tst" : (lower(var.environment) == "production" ? "prd" : (lower(var.environment) == "prod" ? "prd" : lower(var.environment)))))
+
+  groups = flatten(
+    [for group, role in var.role_assignments.group_data :
+      {
+        role            = role
+        role_identifier = replace(role, " ", "_")
+        group           = group
+      }
     ]
   )
 
+  users = flatten(
+    [for user, role in var.role_assignments.user_data :
+      {
+        role            = role
+        role_identifier = replace(role, " ", "_")
+        user            = user
+      }
+    ]
+  )
+
+  role_definitions = flatten(
+    [for file in fileset("${path.root}", "archetypes/role_definitions/*.json") :
+      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
+    ]
+  )
+
+  roles = [
+    "Application-Owners",
+    "Network-Management",
+    "Network-Subnet-Contributor",
+    "Security-Operations",
+    "Subscription-Owner"
+  ]
+
   policy_definitions = flatten(
     [for file in fileset("${path.root}", "archetypes/policy_definitions/*.json") :
-      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", var.management_group_id))
+      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
     ]
   )
 
   policy_set_definitions = flatten(
     [for file in fileset("${path.root}", "archetypes/policy_set_definitions/*.json") :
-      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", var.management_group_id))
+      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
     ]
   )
 
   policy_assignments = flatten(
     [for file in fileset("${path.root}", "archetypes/policy_assignments/*.json") :
       jsondecode(templatefile("${path.root}/${file}", {
-        root_scope_resource_id    = "${var.management_group_id}"
-        current_scope_resource_id = "${var.subscription_id}"
+        root_scope_resource_id    = "${local.root_scope_resource_id}"
+        current_scope_resource_id = "${local.subscription_id}"
         default_location          = "${var.location}"
       }))
     ]
@@ -42,7 +68,6 @@ locals {
   ]
 
   monitoring_policy_assignments = [
-    var.enable_backup != true ? "Deploy-VM-Backup" : "",
     var.enable_monitoring != true ? "Deploy-ASC-Monitoring" : "",
     var.enable_monitoring != true ? "Deploy-AzActivity-Log" : "",
     var.enable_monitoring != true ? "Deploy-AzSqlDb-Auditing" : "",
@@ -53,11 +78,7 @@ locals {
     var.enable_monitoring != true ? "Deploy-SQL-Security" : "",
     var.enable_monitoring != true ? "Deploy-VM-Monitoring" : "",
     var.enable_monitoring != true ? "Deploy-VMSS-Monitoring" : "",
-    var.enable_hub_network == true ? "Deny-Private-DNS-Zones" : "",
-    !contains(local.production_env, lower(terraform.workspace)) ? "Deny-Subnet-Without-Nsg" : "",
-    !contains(local.production_env, lower(terraform.workspace)) ? "Deny-Subnet-Without-Penp" : "",
-    !contains(local.production_env, lower(terraform.workspace)) ? "Deny-Subnet-Without-Udr" : "",
-    contains(local.production_env, lower(terraform.workspace)) ? "Deny-UnmanagedDisk" : ""
+    contains(local.production_env, lower(local.environment)) ? "Deny-UnmanagedDisk" : ""
   ]
   policy_assignment_to_exclude = concat(compact(var.exclude_policy_assignments), compact(local.monitoring_policy_assignments))
 

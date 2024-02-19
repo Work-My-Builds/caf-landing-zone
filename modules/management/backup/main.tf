@@ -3,10 +3,21 @@ resource "azurerm_resource_group" "data_rg" {
   location = var.location
 }
 
+resource "azurerm_management_lock" "rg_lock" {
+  name       = "CanNotDelete-RG-Level"
+  scope      = azurerm_resource_group.data_rg.id
+  lock_level = "CanNotDelete"
+  notes      = "This Resource Group and it's resources can not be deleted"
+}
+
 resource "azurerm_user_assigned_identity" "uai" {
   name                = local.user_assigned_identity_name
   location            = azurerm_resource_group.data_rg.location
   resource_group_name = azurerm_resource_group.data_rg.name
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 module "role_assignment" {
@@ -30,6 +41,10 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled    = true
   enable_rbac_authorization   = true
   sku_name                    = "standard"
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 resource "azurerm_storage_account" "sa" {
@@ -50,6 +65,10 @@ resource "azurerm_data_protection_backup_vault" "bk" {
   identity {
     type = "SystemAssigned"
   }
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 resource "azurerm_recovery_services_vault" "rsv" {
@@ -60,12 +79,17 @@ resource "azurerm_recovery_services_vault" "rsv" {
   cross_region_restore_enabled = true
 
   soft_delete_enabled = true
+
+  depends_on = [
+    azurerm_management_lock.rg_lock
+  ]
 }
 
 resource "azurerm_backup_policy_vm" "rsv_vm_policy" {
   name                = "PlatformEnhanceVMPolicy"
   resource_group_name = azurerm_recovery_services_vault.rsv.resource_group_name
   recovery_vault_name = azurerm_recovery_services_vault.rsv.name
+  policy_type         = "V2"
 
   timezone = "UTC"
 
@@ -98,7 +122,7 @@ resource "azurerm_backup_policy_vm" "rsv_vm_policy" {
 }
 
 resource "azurerm_subscription_policy_assignment" "policy_assignment" {
-  count                = !contains(var.policy_assignment_to_exclude, "Deploy-VM-Backup") ? 1 : 0
+  #count                = !contains(var.policy_assignment_to_exclude, "Deploy-VM-Backup") ? 1 : 0
   name                 = "Deploy-VM-Backup"
   location             = var.location
   policy_definition_id = local.policy_definition_id
@@ -113,16 +137,18 @@ resource "azurerm_subscription_policy_assignment" "policy_assignment" {
   parameters = <<PARAMETERS
     {
       "exclusionTagName": {
-        "value": "Backup"
+        "value": "NoBackup"
       },
       "exclusionTagValue": {
-        "value": "Enable"
+        "value": [
+          "No Backup"
+        ]
       },
-      "recoveryServiceVaultRG": {
-        "value": "${azurerm_recovery_services_vault.rsv.resource_group_name}"
+      "vaultLocation": {
+        "value": "${var.location}"
       },
-      "recoveryServiceVaultName": {
-        "value": "${azurerm_recovery_services_vault.rsv.name}"
+      "backupPolicyId": {
+        "value": "${azurerm_backup_policy_vm.rsv_vm_policy.id}"
       }
     }
   PARAMETERS
