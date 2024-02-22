@@ -396,13 +396,13 @@
         "NAT gateway": {
             "abbreviation": "ng"
         },
-        "Network interface (NIC)": {
+        "Network interface": {
             "abbreviation": "nic"
         },
-        "Network security group (NSG)": {
+        "Network security group": {
             "abbreviation": "nsg"
         },
-        "Network security group (NSG) security rules": {
+        "Network security group security rules": {
             "abbreviation": "nsgsr"
         },
         "Network Watcher": {

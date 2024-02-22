@@ -68,6 +68,39 @@ resource "azurerm_subnet" "subnet" {
   }
 }
 
+resource "azurerm_network_security_group" "nsg" {
+  name                = local.network_security_group_name
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+}
+
+resource "azurerm_route_table" "rt" {
+  name                          = local.route_table_name
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+  disable_bgp_route_propagation = false
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+  for_each = {
+    for subnet in local.subnets : subnet.name => subnet
+    if var.enable_hub_network != true
+  }
+
+  subnet_id                 = azurerm_subnet.subnet[each.value.name].id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+resource "azurerm_subnet_route_table_association" "rt_association" {
+  for_each = {
+    for subnet in local.subnets : subnet.name => subnet
+    if var.enable_hub_network != true
+  }
+
+  subnet_id      = azurerm_subnet.subnet[each.value.name].id
+  route_table_id = azurerm_route_table.rt.id
+}
+
 resource "azurerm_virtual_network_peering" "peering" {
   for_each = {
     for peer in local.peering : peer.peering_name => peer
