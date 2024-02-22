@@ -75,7 +75,7 @@ module "virtual_network_gateway" {
 
   prefix                         = var.prefix
   business_code                  = var.business_code
-  environment                    = var.environment
+  environment                    = local.environment
   location                       = var.location
   vnet_id                        = module.virtual_network[0].vnet_id
   subnet_ids                     = module.virtual_network[0].subnet_id
