@@ -5,8 +5,8 @@ locals {
   vnet_resource_group_name    = lower("${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
   ddos_name                   = lower("${var.prefix}-${local.resource_codes.resources["DDOS Protection plan"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
   virtual_network_name        = lower("${var.prefix}-${local.resource_codes.resources["Virtual network"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  network_security_group_name        = lower("${var.prefix}-${local.resource_codes.resources["Network security group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  route_table_name        = lower("${var.prefix}-${local.resource_codes.resources["Route table"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
+  network_security_group_name = lower("${var.prefix}-${local.resource_codes.resources["Network security group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
+  route_table_name            = lower("${var.prefix}-${local.resource_codes.resources["Route table"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
 
   subnet_prefix = lower("${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}")
 

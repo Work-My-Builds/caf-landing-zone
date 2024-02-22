@@ -76,8 +76,8 @@ resource "azurerm_network_security_group" "nsg" {
 
 resource "azurerm_route_table" "rt" {
   name                          = local.route_table_name
-  location            = azurerm_resource_group.network_rg.location
-  resource_group_name = azurerm_resource_group.network_rg.name
+  location                      = azurerm_resource_group.network_rg.location
+  resource_group_name           = azurerm_resource_group.network_rg.name
   disable_bgp_route_propagation = false
 }
 
