@@ -22,14 +22,6 @@ resource "azurerm_public_ip" "vpn_pip" {
   zones = [1, 2, 3]
 }
 
-#resource "azurerm_public_ip" "afw_management_pip" {
-#  name                = local.firewall_management_public_ip_address_name
-#  location            = data.azurerm_virtual_network.vnet.location
-#  resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
-#  allocation_method   = "Static"
-#  sku                 = "Standard"
-#}
-
 resource "azurerm_firewall_policy" "afwp" {
   name                = local.firewall_policy_name
   location            = data.azurerm_virtual_network.vnet.location
@@ -53,11 +45,6 @@ resource "azurerm_firewall" "afw" {
     subnet_id            = lookup(var.subnet_ids, "AzureFirewallSubnet", null)
     public_ip_address_id = azurerm_public_ip.afw_pip.id
   }
-  #management_ip_configuration {
-  #  name                 = "managementConfiguration"
-  #  subnet_id            = "${data.azurerm_virtual_network.vnet.id}/subnets/AzureFirewallManagementSubnet"
-  #  public_ip_address_id = azurerm_public_ip.afw_management_pip.id
-  #}
 }
 
 resource "azurerm_virtual_network_gateway" "vpn" {
@@ -122,7 +109,7 @@ resource "azurerm_virtual_network_gateway_connection" "cloud-to-onpremise" {
   shared_key = random_string.random.result
 }
 
-/*resource "azurerm_private_dns_zone" "pdz" {
+resource "azurerm_private_dns_zone" "pdz" {
   for_each = {
     for dns in local.private_dns_zones : dns.private_dns_zone_name => dns
   }
@@ -140,4 +127,4 @@ resource "azurerm_private_dns_zone_virtual_network_link" "pdzl" {
   resource_group_name   = data.azurerm_virtual_network.vnet.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.pdz[each.value.private_dns_zone_name].name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-}*/
+}
