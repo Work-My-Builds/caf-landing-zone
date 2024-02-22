@@ -1,11 +1,15 @@
+output "resource_group_name" {
+  value = azurerm_resource_group.mon_rg.name
+}
+
 output "identity_id" {
   value = azurerm_user_assigned_identity.uai.id
 }
 
-output "log_analytics_workspace_rg_name" {
-  value = local.mon_resource_group_name
+output "log_analytics_workspace_id" {
+  value = azurerm_log_analytics_workspace.oms.id
 }
 
-output "log_analytics_workspace_name" {
-  value = local.log_analytics_workspace_name
+output "storage_account_id" {
+  value = azurerm_storage_account.sa.id
 }

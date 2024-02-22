@@ -37,16 +37,6 @@ variable "role_assignments" {
   default = {}
 }
 
-variable "enable_role_definitions" {
-  type    = bool
-  default = false
-}
-
-variable "enable_policy_definitions" {
-  type    = bool
-  default = false
-}
-
 variable "enable_policy_assignments" {
   type    = bool
   default = false

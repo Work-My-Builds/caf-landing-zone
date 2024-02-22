@@ -7,5 +7,7 @@ output "vnet_id" {
 }
 
 output "subnet_id" {
-  value = flatten([ for sub in azurerm_subnet.subnet: sub.id ])
+  value = {
+    for key, val in azurerm_subnet.subnet : val.name => val.id
+  }
 }

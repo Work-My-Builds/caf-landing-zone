@@ -7,7 +7,14 @@ resource "azurerm_management_lock" "rg_lock" {
   name       = "CanNotDelete-RG-Level"
   scope      = azurerm_resource_group.network_rg.id
   lock_level = "CanNotDelete"
-  notes      = "This Resource Group and it's resources can not be deleted"
+  notes      = "CanNotDelete lock on this Resource Group and it's resources"
+
+  depends_on = [
+    azurerm_network_ddos_protection_plan.ddos,
+    azurerm_subnet.subnet,
+    azurerm_virtual_network.vnet,
+    azurerm_virtual_network_peering.peering
+  ]
 }
 
 resource "azurerm_network_ddos_protection_plan" "ddos" {
@@ -16,10 +23,6 @@ resource "azurerm_network_ddos_protection_plan" "ddos" {
   name                = local.ddos_name
   location            = azurerm_resource_group.network_rg.location
   resource_group_name = azurerm_resource_group.network_rg.name
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -78,57 +81,4 @@ resource "azurerm_virtual_network_peering" "peering" {
   allow_forwarded_traffic      = each.value.allow_forwarded_traffic
   allow_gateway_transit        = each.value.allow_gateway_transit
   use_remote_gateways          = each.value.use_remote_gateways
-}
-
-resource "azurerm_private_dns_zone" "pdz" {
-  for_each = {
-    for dns in local.private_dns_zones : dns.private_dns_zone_name => dns
-  }
-
-  name                = each.value.private_dns_zone_name
-  resource_group_name = azurerm_resource_group.network_rg.name
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "pdzl" {
-  for_each = {
-    for dns in local.private_dns_zones : dns.private_dns_zone_name => dns
-  }
-
-  name                  = azurerm_virtual_network.vnet.name
-  resource_group_name   = azurerm_virtual_network.vnet.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.pdz[each.value.private_dns_zone_name].name
-  virtual_network_id    = azurerm_virtual_network.vnet.id
-}
-
-# Create Azure Policy Assignment
-resource "azurerm_subscription_policy_assignment" "policy_assignment" {
-  for_each = {
-    for assign in local.subscription_policy_assignments : assign.name => assign
-  }
-
-  name                 = each.value.name
-  location             = var.location
-  policy_definition_id = each.value.policy_definition_id
-  subscription_id      = each.value.scope
-  display_name         = each.value.display_name
-  description          = each.value.description
-  parameters           = each.value.parameters
-
-  dynamic "non_compliance_message" {
-    for_each = each.value.non_compliance_message
-    iterator = ncm
-
-    content {
-      content = ncm.value
-    }
-  }
-
-  dynamic "identity" {
-    for_each = each.value.identity
-
-    content {
-      type         = "UserAssigned"
-      identity_ids = [azurerm_user_assigned_identity.uai.id]
-    }
-  }
 }

@@ -1,12 +1,3 @@
-variable "root_scope_resource_id" {
-  type    = string
-  default = ""
-}
-
-variable "management_group_id" {
-  type = string
-}
-
 variable "subscription_id" {
   type = string
 }
@@ -26,11 +17,6 @@ variable "environment" {
 
 variable "location" {
   type = string
-}
-
-variable "policy_definition_depencies" {
-  type    = list(string)
-  default = []
 }
 
 variable "vulnerabilityAssessmentsEmail" {

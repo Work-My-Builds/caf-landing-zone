@@ -7,17 +7,20 @@ resource "azurerm_management_lock" "rg_lock" {
   name       = "CanNotDelete-RG-Level"
   scope      = azurerm_resource_group.mon_rg.id
   lock_level = "CanNotDelete"
-  notes      = "This Resource Group and it's resources can not be deleted"
+  notes      = "CanNotDelete lock on this Resource Group and it's resources"
+
+  depends_on = [
+    azurerm_log_analytics_workspace.oms,
+    azurerm_monitor_data_collection_rule.dcr,
+    azurerm_storage_account.sa,
+    azurerm_user_assigned_identity.uai
+  ]
 }
 
 resource "azurerm_user_assigned_identity" "uai" {
   name                = local.user_assigned_identity_name
   location            = azurerm_resource_group.mon_rg.location
   resource_group_name = azurerm_resource_group.mon_rg.name
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 module "role_assignment" {
@@ -45,15 +48,16 @@ resource "azurerm_log_analytics_workspace" "oms" {
 }
 
 resource "azurerm_storage_account" "sa" {
-  name                     = local.storage_account_name
-  location                 = azurerm_resource_group.mon_rg.location
-  resource_group_name      = azurerm_resource_group.mon_rg.name
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                          = local.storage_account_name
+  location                      = azurerm_resource_group.mon_rg.location
+  resource_group_name           = azurerm_resource_group.mon_rg.name
+  account_tier                  = "Standard"
+  account_replication_type      = "LRS"
+  public_network_access_enabled = false
 
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
+  #network_rules {
+  #  default_action = "Deny"
+  #}
 }
 
 resource "azurerm_monitor_data_collection_rule" "dcr" {
@@ -128,38 +132,5 @@ resource "azurerm_monitor_data_collection_rule" "dcr" {
     streams = [
       "Microsoft-Syslog",
     ]
-  }
-}
-
-# Create Azure Policy Assignment
-resource "azurerm_subscription_policy_assignment" "policy_assignment" {
-  for_each = {
-    for assign in local.subscription_policy_assignments : assign.name => assign
-  }
-
-  name                 = each.value.name
-  location             = var.location
-  policy_definition_id = each.value.policy_definition_id
-  subscription_id      = each.value.scope
-  display_name         = each.value.display_name
-  description          = each.value.description
-  parameters           = each.value.parameters
-
-  dynamic "non_compliance_message" {
-    for_each = each.value.non_compliance_message
-    iterator = ncm
-
-    content {
-      content = ncm.value
-    }
-  }
-
-  dynamic "identity" {
-    for_each = each.value.identity
-
-    content {
-      type         = "UserAssigned"
-      identity_ids = [azurerm_user_assigned_identity.uai.id]
-    }
   }
 }

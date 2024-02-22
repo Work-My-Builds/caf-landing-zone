@@ -50,7 +50,7 @@ resource "azurerm_firewall" "afw" {
 
   ip_configuration {
     name                 = "configuration"
-    subnet_id            = "${data.azurerm_virtual_network.vnet.id}/subnets/AzureFirewallSubnet"
+    subnet_id            = lookup(var.subnet_ids, "AzureFirewallSubnet", null)
     public_ip_address_id = azurerm_public_ip.afw_pip.id
   }
   #management_ip_configuration {
@@ -74,7 +74,7 @@ resource "azurerm_virtual_network_gateway" "vpn" {
 
   ip_configuration {
     name                          = "vnetGatewayConfig"
-    subnet_id                     = "${data.azurerm_virtual_network.vnet.id}/subnets/GatewaySubnet"
+    subnet_id                     = lookup(var.subnet_ids, "GatewaySubnet", null)
     public_ip_address_id          = azurerm_public_ip.vpn_pip.id
     private_ip_address_allocation = "Dynamic"
   }
@@ -121,3 +121,23 @@ resource "azurerm_virtual_network_gateway_connection" "cloud-to-onpremise" {
 
   shared_key = random_string.random.result
 }
+
+/*resource "azurerm_private_dns_zone" "pdz" {
+  for_each = {
+    for dns in local.private_dns_zones : dns.private_dns_zone_name => dns
+  }
+
+  name                = each.value.private_dns_zone_name
+  resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "pdzl" {
+  for_each = {
+    for dns in local.private_dns_zones : dns.private_dns_zone_name => dns
+  }
+
+  name                  = data.azurerm_virtual_network.vnet.name
+  resource_group_name   = data.azurerm_virtual_network.vnet.resource_group_name
+  private_dns_zone_name = azurerm_private_dns_zone.pdz[each.value.private_dns_zone_name].name
+  virtual_network_id    = data.azurerm_virtual_network.vnet.id
+}*/

@@ -14,6 +14,4 @@ locals {
     "Storage Account Contributor",
     "Virtual Machine Contributor"
   ]
-
-  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/09ce66bc-1220-4153-8104-e3f51c936913"
 }

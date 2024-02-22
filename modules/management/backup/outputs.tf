@@ -1,7 +1,11 @@
-output "storage_account_rg_name" {
-  value = local.data_resource_group_name
+output "identity_id" {
+  value = azurerm_user_assigned_identity.uai.id
 }
 
-output "storage_account_name" {
-  value = local.storage_account_name
+output "backup_policy_id" {
+  value = azurerm_backup_policy_vm.rsv_vm_policy.id
+}
+
+output "storage_account_id" {
+  value = azurerm_storage_account.sa.id
 }

@@ -20,36 +20,4 @@ locals {
     "Storage Account Contributor",
     "SQL Managed Instance Contributor"
   ]
-
-  policy_assignments = flatten(
-    [for file in fileset("${path.root}", "archetypes/policy_assignments/monitoring/*.json") :
-      jsondecode(templatefile("${path.root}/${file}", {
-        root_scope_resource_id            = "${var.root_scope_resource_id}"
-        current_scope_resource_id         = "${var.subscription_id}"
-        default_location                  = "${var.location}"
-        logAnalyticWorkspaceID            = "${data.azurerm_subscription.subscription.id}/resourceGroups/${local.mon_resource_group_name}/providers/Microsoft.OperationalInsights/workspaces/${local.log_analytics_workspace_name}"
-        emailSecurityContact              = "${var.emailSecurityContact}"
-        ascExportResourceGroupName        = "${local.mon_resource_group_name}"
-        ascExportResourceGroupLocation    = "${var.location}"
-        vulnerabilityAssessmentsEmail     = "${var.vulnerabilityAssessmentsEmail}"
-        vulnerabilityAssessmentsStorageID = "${data.azurerm_subscription.subscription.id}/resourceGroups/${local.mon_resource_group_name}/Microsoft.Storage/storageAccounts/${local.storage_account_name}"
-      }))
-    ]
-  )
-
-  subscription_policy_assignments = flatten(
-    [for assign in local.policy_assignments :
-      {
-        name                   = assign.name
-        location               = assign.location
-        policy_definition_id   = assign.properties.policyDefinitionId
-        display_name           = assign.properties.displayName
-        description            = assign.properties.description
-        non_compliance_message = try(assign.properties.nonComplianceMessages, "None") != "None" ? assign.properties.nonComplianceMessages[0] : {}
-        parameters             = assign.properties.parameters != {} ? jsonencode(assign.properties.parameters) : null
-        scope                  = assign.properties.scope
-        identity               = assign.identity.type != "None" ? assign.identity : {}
-      }
-    ]
-  )
 }

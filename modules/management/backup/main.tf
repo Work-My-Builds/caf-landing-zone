@@ -7,17 +7,22 @@ resource "azurerm_management_lock" "rg_lock" {
   name       = "CanNotDelete-RG-Level"
   scope      = azurerm_resource_group.data_rg.id
   lock_level = "CanNotDelete"
-  notes      = "This Resource Group and it's resources can not be deleted"
+  notes      = "CanNotDelete lock on this Resource Group and it's resources"
+
+  depends_on = [
+    azurerm_backup_policy_vm.rsv_vm_policy,
+    azurerm_data_protection_backup_vault.bk,
+    azurerm_key_vault.kv,
+    azurerm_recovery_services_vault.rsv,
+    azurerm_storage_account.sa,
+    azurerm_user_assigned_identity.uai
+  ]
 }
 
 resource "azurerm_user_assigned_identity" "uai" {
   name                = local.user_assigned_identity_name
   location            = azurerm_resource_group.data_rg.location
   resource_group_name = azurerm_resource_group.data_rg.name
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 module "role_assignment" {
@@ -41,18 +46,19 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled    = true
   enable_rbac_authorization   = true
   sku_name                    = "standard"
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 resource "azurerm_storage_account" "sa" {
-  name                     = local.storage_account_name
-  resource_group_name      = azurerm_resource_group.data_rg.name
-  location                 = azurerm_resource_group.data_rg.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                          = local.storage_account_name
+  resource_group_name           = azurerm_resource_group.data_rg.name
+  location                      = azurerm_resource_group.data_rg.location
+  account_tier                  = "Standard"
+  account_replication_type      = "LRS"
+  public_network_access_enabled = false
+
+  #network_rules {
+  #  default_action = "Deny"
+  #}
 }
 
 resource "azurerm_data_protection_backup_vault" "bk" {
@@ -65,10 +71,6 @@ resource "azurerm_data_protection_backup_vault" "bk" {
   identity {
     type = "SystemAssigned"
   }
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 resource "azurerm_recovery_services_vault" "rsv" {
@@ -79,10 +81,6 @@ resource "azurerm_recovery_services_vault" "rsv" {
   cross_region_restore_enabled = true
 
   soft_delete_enabled = true
-
-  depends_on = [
-    azurerm_management_lock.rg_lock
-  ]
 }
 
 resource "azurerm_backup_policy_vm" "rsv_vm_policy" {
@@ -118,43 +116,5 @@ resource "azurerm_backup_policy_vm" "rsv_vm_policy" {
     weekdays = ["Sunday"]
     weeks    = ["Last"]
     months   = ["January"]
-  }
-}
-
-resource "azurerm_subscription_policy_assignment" "policy_assignment" {
-  #count                = !contains(var.policy_assignment_to_exclude, "Deploy-VM-Backup") ? 1 : 0
-  name                 = "Deploy-VM-Backup"
-  location             = var.location
-  policy_definition_id = local.policy_definition_id
-  subscription_id      = data.azurerm_subscription.subscription.id
-  display_name         = var.display_name
-  description          = var.description
-
-  non_compliance_message {
-    content = var.non_compliance_message
-  }
-
-  parameters = <<PARAMETERS
-    {
-      "exclusionTagName": {
-        "value": "NoBackup"
-      },
-      "exclusionTagValue": {
-        "value": [
-          "No Backup"
-        ]
-      },
-      "vaultLocation": {
-        "value": "${var.location}"
-      },
-      "backupPolicyId": {
-        "value": "${azurerm_backup_policy_vm.rsv_vm_policy.id}"
-      }
-    }
-  PARAMETERS
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.uai.id]
   }
 }
