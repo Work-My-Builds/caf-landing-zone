@@ -5,38 +5,6 @@ resource "azurerm_management_group_subscription_association" "mg_subscription_as
 }
 
 # Create Azure Policy Assignment
-resource "azurerm_subscription_policy_assignment" "policy_assignment" {
-  for_each = {
-    for assign in local.subscription_policy_assignments : assign.name => assign
-  }
-
-  name                 = each.value.name
-  location             = var.location
-  policy_definition_id = each.value.policy_definition_id
-  subscription_id      = each.value.scope
-  display_name         = each.value.display_name
-  description          = each.value.description
-  parameters           = each.value.parameters
-
-  dynamic "non_compliance_message" {
-    for_each = each.value.non_compliance_message
-    iterator = ncm
-
-    content {
-      content = ncm.value
-    }
-  }
-
-  dynamic "identity" {
-    for_each = each.value.identity
-
-    content {
-      type = "SystemAssigned"
-    }
-  }
-}
-
-# Create Azure Policy Assignment
 resource "azurerm_subscription_policy_assignment" "core_policy_assignment" {
   for_each = {
     for assign in local.core_subscription_policy_assignments : assign.name => assign

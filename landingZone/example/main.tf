@@ -1,5 +1,5 @@
 module "root_policy_definitions" {
-  source = "../../modules/policy_definitions"
+  source = "../modules/root_policies"
 
   providers = {
     azurerm = azurerm.default
@@ -8,6 +8,7 @@ module "root_policy_definitions" {
   root_scope_resource_id    = "root_scope_resource_id"
   location                  = var.location
   enable_policy_definitions = true
+  enable_policy_assignments = true
 }
 
 module "online" {
