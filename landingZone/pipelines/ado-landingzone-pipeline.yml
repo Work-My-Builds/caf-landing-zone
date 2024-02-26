@@ -1,0 +1,311 @@
+name: $(BuildDefinitionName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger: none
+#- main
+
+variables:
+- name: TerraformDirectory
+  value: '$(System.DefaultWorkingDirectory)/example'
+- name: commandOptions
+  value: '-out=$(TerraformDirectory)/terraform.tfplan -input=false'
+- name: TerraformDestroy
+  value: false
+- group: IaC-Terraform
+
+jobs:
+- job: 'TerraformBuild'
+  displayName: 'Terraform Build'
+  timeoutInMinutes: 4320
+  pool:
+    vmImage: ubuntu-latest
+
+  condition: |
+    and
+    (
+      not(failed()), not(canceled()), eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    )
+  steps:
+  - task: replacetokens@4
+    displayName: 'Replace tokens in appsettings.json'
+    inputs:
+      rootDirectory: '$(TerraformDirectory)'
+      targetFiles: appsettings.json
+      escapeType: none
+      tokenPrefix: '__'
+      tokenSuffix: '__'
+    condition: succeeded()
+  
+  # Terraform Access Step
+  - task: Bash@3
+    displayName: 'Terraform: Access'
+    inputs:
+      targetType: 'inline'
+      script: |
+
+        AzureDevOpsPAT='$(Job_Pat_Token)'
+        git config --global url."https://$AzureDevOpsPAT@dev.azure.com".insteadOf https://dev.azure.com
+      
+      workingDirectory: '$(TerraformDirectory)'
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      OrganizationUrl: $(System.TeamFoundationCollectionUri)
+    condition: succeeded()
+
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    displayName: 'Terraform Installer'
+    inputs:
+      terraformVersion: 'latest'
+    condition: succeeded()
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform : Init'
+    inputs:
+      command: 'init'
+      backendServiceArm: '$(azureRmServiceConnection)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: Bash@3
+    displayName: 'Terraform : Workspace'
+    inputs:
+      targetType: 'inline'
+      script: terraform workspace select -or-create=true $(environment)
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform : Validate'
+    inputs:
+      command: 'validate'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: TerraformTaskV4@4
+    name: 'plan'
+    displayName: 'Terraform : Plan'
+    inputs:
+      command: 'plan'
+      environmentServiceNameAzureRM: '$(environmentAzureRmServiceConnection)'
+      commandOptions: '$(commandOptions)'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: Bash@3
+    name: detectChange
+    displayName: 'Terraform: Detect Change'
+    inputs:
+      targetType: 'inline'
+      script: |
+        terraform show -json $(TerraformDirectory)/terraform.tfplan > tfplan.json
+
+        getOutput=`cat tfplan.json | jq '.resource_changes[].change.actions[]'`
+
+        if [[ ${getOutput[@]} =~ "create" ]] || [[ ${getOutput[@]} =~ "update" ]] || [[ ${getOutput[@]} =~ "create" ]]
+        then
+          echo "Terraform changes detected: TERRAFORM_PLAN_HAS_CHANGES"
+          echo "##vso[task.setvariable variable=HAS_CHANGES_ONLY;isOutput=true]true"
+        else
+          echo "Terraform detected no change: NO_CHANGES_DETECTED"
+          echo "##vso[task.setvariable variable=HAS_CHANGES_ONLY;isOutput=true]false"
+        fi
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Terraform Build'
+    inputs:
+      artifact: 'tf-artifact'
+      path: '$(TerraformDirectory)'
+    condition: |
+      and
+      (
+        not(failed()), not(canceled()), eq(variables['detectChange.HAS_CHANGES_ONLY'], 'true')
+      )
+
+- job: 'CheckovScan'
+  displayName: 'Checkov pull, run and publish results of Checkov scan'
+  dependsOn: [TerraformBuild]
+  variables:
+  ### Manual Variables ###
+  - name: job_AnyTfChanges
+    value: $[ dependencies.TerraformBuild.outputs['detectChange.HAS_CHANGES_ONLY']]
+
+  condition: |
+    and
+    (
+      not(failed()), not(canceled()), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.job_AnyTfChanges, 'true')
+    )
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download Terraform Artifact'
+    inputs:
+      source: 'current' # 'current' (current pipeline run) or 'specific' (project and pipeline inputs reqd if specific used)
+      artifact: 'tf-artifact' # artifact to download
+      targetPath: '$(TerraformDirectory)'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: Bash@3
+    displayName: 'Terraform: Plugin Access'
+    inputs:
+      targetType: 'inline'
+      script: |
+        chmod -R 777 '$(TerraformDirectory)/.terraform'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: '3.7'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: Bash@3
+    displayName: 'Install Checkov'
+    inputs:
+      targetType: 'inline'
+      script: python3.7 -m pip install -U checkov #to install or upgrade checkov)
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+  
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    displayName: 'Terraform Installer'
+    inputs:
+      terraformVersion: 'latest'
+    condition: succeeded()
+
+  - task: Bash@3
+    displayName: 'Run Checkov'
+    name: 'runcheckov'
+    inputs:
+      targetType: 'inline'
+      script: |
+
+        terraform show $(TerraformDirectory)/terraform.tfplan  > $(TerraformDirectory)/terraform.json 
+        checkov -f $(TerraformDirectory)/terraform.json \
+        --output junitxml --soft-fail > $(TerraformDirectory)/CheckovReport.xml
+
+        chmod -R 777 '$(TerraformDirectory)/CheckovReport.xml'
+        checkovOutputFile='$(TerraformDirectory)/CheckovReport.xml'
+        geterrors=`cat ${checkovOutputFile} | grep -oP '(?<=testsuites)[^>]+' | cut -d" " -f3`
+        getfailures=`cat ${checkovOutputFile} | grep -oP '(?<=testsuites)[^>]+' | cut -d" " -f4`
+        errors=${geterrors#*=}
+        failures=${getfailures#*=}
+
+        if [[ $errors != \"0\" ]] || [[ $failures != \"0\" ]]
+        then
+          echo "Checkov found the following errors: $errors"
+          echo "Checkov found the following failues: $failures"
+          echo "##vso[task.setvariable variable=HAS_ERROR_FAILURE;isOutput=true]true"
+        else
+          echo "Checkov found no error or failure"
+          echo "##vso[task.setvariable variable=HAS_ERROR_FAILURE;isOutput=true]false"
+        fi
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: PublishTestResults@2
+    displayName: 'Publish > Checkov scan results'
+    inputs:
+      testRunTitle: 'Checkov Results'
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'CheckovReport.xml'
+      mergeTestResults: false
+      searchFolder: '$(TerraformDirectory)'
+      failTaskOnFailedTests: false
+      publishRunAttachments: true
+    condition: succeeded()
+
+- job: 'TerraformValidation'
+  displayName: 'Terraform Manual Validation'
+  dependsOn: [CheckovScan, TerraformBuild]
+  pool: server
+  variables:
+  ### Manual Variables ###
+  - name: job_AnyCheckovChanges
+    value: $[ dependencies.CheckovScan.outputs['runcheckov.HAS_ERROR_FAILURE']]
+  - name: job_AnyTfChanges
+    value: $[ dependencies.TerraformBuild.outputs['detectChange.HAS_CHANGES_ONLY']]
+
+  condition: |
+    and
+    (
+      not(failed()), not(canceled()), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.job_AnyTfChanges, 'true'), eq(variables.job_AnyCheckovChanges, 'false')
+    )
+  steps:
+  - task: ManualValidation@0
+    timeoutInMinutes: 1440 # task times out in 1 day
+    inputs:
+      notifyUsers: |
+        mifalowo@mytecloud.com
+      instructions: 'Please Validate The Terraform PLan Output And Resume'
+      onTimeout: 'resume'
+
+- job: 'TerraformApply'
+  dependsOn: [TerraformBuild, CheckovScan, TerraformValidation]
+  displayName: 'Terraform Apply'
+  variables:
+  ### Manual Variables ###
+  - name: job_AnyCheckovChanges
+    value: $[ dependencies.CheckovScan.outputs['runcheckov.HAS_ERROR_FAILURE']]
+  - name: job_AnyTfChanges
+    value: $[ dependencies.TerraformBuild.outputs['detectChange.HAS_CHANGES_ONLY']]
+  condition: |
+    and
+    (
+      not(failed()), not(canceled()), eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables.job_AnyTfChanges, 'true'), eq(variables.job_AnyCheckovChanges, 'false')
+    )
+  timeoutInMinutes: 4320
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download Terraform Artifact'
+    inputs:
+      source: 'current' # 'current' (current pipeline run) or 'specific' (project and pipeline inputs reqd if specific used)
+      artifact: 'tf-artifact' # artifact to download
+      targetPath: '$(TerraformDirectory)'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: Bash@3
+    displayName: 'Terraform: Plugin Access'
+    inputs:
+      targetType: 'inline'
+      script: |
+        chmod -R 777 '$(TerraformDirectory)/.terraform'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+    displayName: 'Terraform Installer'
+    inputs:
+      terraformVersion: 'latest'
+    condition: succeeded()
+
+  - task: TerraformTaskV4@4
+    displayName: 'Terraform : Init'
+    inputs:
+      command: 'init'
+      backendServiceArm: '$(azureRmServiceConnection)'
+      backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+      backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+      backendAzureRmKey: '$(backendAzureRmKey)'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
+
+  - task: TerraformTaskV4@4
+    name: 'apply'
+    displayName: 'Terraform : Apply'
+    inputs:
+      command: 'apply'
+      environmentServiceNameAzureRM: '$(environmentAzureRmServiceConnection)'
+      commandOptions: '-auto-approve terraform.tfplan'
+      workingDirectory: '$(TerraformDirectory)'
+    condition: succeeded()
