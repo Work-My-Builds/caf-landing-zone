@@ -31,6 +31,10 @@ variable "onpremise_address_space" {
   default = null
 }
 
+variable "log_analytics_workspace_id" {
+  type = string
+}
+
 variable "onpremise_bgp_peering_settings" {
   type = list(object({
     asn                 = number

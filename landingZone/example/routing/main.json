@@ -1,0 +1,19 @@
+{
+    "routes": {
+        "cloudgatewayrt": {
+            "resource_group_name": "cloudgatewayrg",
+            "routes_rule": {
+                "route-to-nva1": {
+                    "address_prefix": "10.10.0.100/32",
+                    "next_hop_type": "VirtualAppliance",
+                    "next_hop_in_ip_address": "10.0.0.1"
+                },
+                "route-to-nva2": {
+                    "address_prefix": "10.10.0.200/32",
+                    "next_hop_type": "VirtualAppliance",
+                    "next_hop_in_ip_address": "10.0.0.1"
+                }
+            }
+        }
+    }
+}

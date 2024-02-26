@@ -27,6 +27,16 @@ resource "azurerm_firewall_policy" "afwp" {
   location            = data.azurerm_virtual_network.vnet.location
   resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
   sku                 = "Premium"
+
+  insights {
+    enabled                            = true
+    default_log_analytics_workspace_id = var.log_analytics_workspace_id
+    retention_in_days                  = 30
+  }
+
+  intrusion_detection {
+    mode = "Alert"
+  }
 }
 
 resource "azurerm_firewall" "afw" {
@@ -44,6 +54,20 @@ resource "azurerm_firewall" "afw" {
     name                 = "configuration"
     subnet_id            = lookup(var.subnet_ids, "AzureFirewallSubnet", null)
     public_ip_address_id = azurerm_public_ip.afw_pip.id
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "diag" {
+  name                       = "${local.firewall_name}-diag"
+  target_resource_id         = azurerm_firewall.afw.id
+  log_analytics_workspace_id = var.log_analytics_workspace_id
+
+  enabled_log {
+    category_group = "allLogs"
+  }
+
+  metric {
+    category = "AllMetrics"
   }
 }
 

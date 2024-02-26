@@ -91,6 +91,16 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
+resource "azurerm_subnet_route_table_association" "gateway_rt_association" {
+  for_each = {
+    for subnet in local.subnets : subnet.name => subnet
+    if var.enable_hub_network == true && subnet.name == "GatewaySubnet"
+  }
+
+  subnet_id      = azurerm_subnet.subnet[each.value.name].id
+  route_table_id = azurerm_route_table.rt.id
+}
+
 resource "azurerm_subnet_route_table_association" "rt_association" {
   for_each = {
     for subnet in local.subnets : subnet.name => subnet

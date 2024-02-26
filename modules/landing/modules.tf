@@ -82,6 +82,6 @@ module "virtual_network_gateway" {
   onpremise_gateway_ip           = var.virtual_network.onpremise_gateway_ip
   onpremise_address_space        = var.virtual_network.onpremise_address_space
   onpremise_bgp_peering_settings = var.virtual_network.onpremise_bgp_peering_settings
-
-  depends_on = [module.virtual_network.vnet_id]
+  log_analytics_workspace_id     = module.monitoring.log_analytics_workspace_id
+  depends_on                     = [module.virtual_network.vnet_id]
 }

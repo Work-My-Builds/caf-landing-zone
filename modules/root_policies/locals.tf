@@ -1,5 +1,5 @@
 locals {
-  root_scope_resource_id       = "/providers/Microsoft.Management/managementGroups/${var.root_scope_resource_id}"
+  root_scope_resource_id = "/providers/Microsoft.Management/managementGroups/${var.root_scope_resource_id}"
 
   policy_definitions = flatten(
     [for file in fileset("${path.root}", "archetypes/policy_definitions/*.json") :
