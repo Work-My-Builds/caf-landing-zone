@@ -1,0 +1,192 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "Enforce-Naming-Convention-For-Case-Sensitive-Resources",
+  "apiVersion": "2021-06-01",
+  "scope": null,
+  "properties": {
+    "policyType": "Custom",
+    "mode": "All",
+    "displayName": "Enforce naming convention for case sensitive resources",
+    "description": "This policy enforces a naming pattern a sensitive resources.",
+    "metadata": {
+      "version": "1.1.1",
+      "category": "Naming Convention",
+      "source": "https://github.com/Azure/Enterprise-Scale/",
+      "alzCloudEnvironments": [
+        "AzureCloud",
+        "AzureChinaCloud",
+        "AzureUSGovernment"
+      ]
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        }
+      },
+      "locationCode": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Resource type abbreviation",
+          "description": "A short name for Azure regions"
+        },
+        "allowedValues": [
+          "auc",
+          "auc2",
+          "aue",
+          "ause",
+          "brs",
+          "brse",
+          "cac",
+          "cae",
+          "inc",
+          "cus",
+          "cne",
+          "cne2",
+          "cnn",
+          "cnn2",
+          "cnn3",
+          "eas",
+          "eus",
+          "eus2",
+          "frc",
+          "frs",
+          "den",
+          "dewc",
+          "itn",
+          "jpe",
+          "jpw",
+          "incj",
+          "inwj",
+          "krc",
+          "krs",
+          "ncus",
+          "euc",
+          "noe",
+          "now",
+          "qac",
+          "san",
+          "saw",
+          "scus",
+          "ins",
+          "sas",
+          "sec",
+          "ses",
+          "swn",
+          "sww",
+          "uac",
+          "uan",
+          "uks",
+          "ukw",
+          "udc",
+          "ude",
+          "uga",
+          "ugi",
+          "ugt",
+          "ugv",
+          "wcus",
+          "euw",
+          "inw",
+          "wus",
+          "wus2",
+          "wus3"
+        ]
+      },
+      "resourceType": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Resource type",
+          "description": "Resource type to enforce naming pattern.",
+          "strongType": "resourceTypes"
+        }
+      },
+      "resourceAbbreviation": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Resource type abbreviation",
+          "description": "A short name for Azure resource type to use in resource names"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "[parameters('resourceType')]",
+            "field": "type"
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'dev', '.#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'dev', '..#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'prd', '.#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'prd', '..#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'qa', '.#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'qa', '..#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'stg', '.#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'stg', '..#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'tst', '.#')]"
+            }
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[concat(parameters('resourceAbbreviation'), '...', parameters('locationCode'), 'tst', '..#')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

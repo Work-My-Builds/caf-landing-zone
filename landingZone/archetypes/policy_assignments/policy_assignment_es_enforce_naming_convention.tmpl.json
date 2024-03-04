@@ -1,0 +1,1198 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Enforce-NamingConvention",
+  "dependsOn": [],
+  "properties": {
+    "description": "This policy enforces a naming pattern common resource types.",
+    "displayName": "Enforce naming convention for resource group and resources",
+    "policyDefinitionId": "${root_scope_resource_id}/providers/Microsoft.Authorization/policySetDefinitions/Enforce-Naming-Convention-For-Resources-Initiative",
+    "enforcementMode": "Default",
+    "nonComplianceMessages": [
+      {
+        "message": "Resource should conform to naming standards"
+      }
+    ],
+    "parameters": {
+      "locationCode": {
+        "value": "cus"
+      },
+      "resourceGroupAbbreviation": {
+        "value" : "rg"
+      },
+      "resourceGroupEffect": {
+        "value": "Deny"
+      },
+      "aISearchAbbreviation": {
+        "value" : "srch"
+      },
+      "aISearchEffect": {
+        "value": "Deny"
+      },
+      "aKSClusterAbbreviation": {
+        "value" : "aks"
+      },
+      "aKSClusterEffect": {
+        "value": "Deny"
+      },
+      "aKSSystemNodePoolAbbreviation": {
+        "value" : "npsystem"
+      },
+      "aKSSystemNodePoolEffect": {
+        "value": "Deny"
+      },
+      "aKSUserNodePoolAbbreviation": {
+        "value" : "np"
+      },
+      "aKSUserNodePoolEffect": {
+        "value": "Deny"
+      },
+      "aPIManagementServiceInstanceAbbreviation": {
+        "value" : "apim"
+      },
+      "aPIManagementServiceInstanceEffect": {
+        "value": "Deny"
+      },
+      "appConfigurationStoreAbbreviation": {
+        "value" : "appcs"
+      },
+      "appConfigurationStoreEffect": {
+        "value": "Deny"
+      },
+      "appServiceEnvironmentAbbreviation": {
+        "value" : "ase"
+      },
+      "appServiceEnvironmentEffect": {
+        "value": "Deny"
+      },
+      "appServicePlanAbbreviation": {
+        "value" : "asp"
+      },
+      "appServicePlanEffect": {
+        "value": "Deny"
+      },
+      "applicationGatewayAbbreviation": {
+        "value" : "agw"
+      },
+      "applicationGatewayEffect": {
+        "value": "Deny"
+      },
+      "applicationInsightsAbbreviation": {
+        "value" : "appi"
+      },
+      "applicationInsightsEffect": {
+        "value": "Deny"
+      },
+      "applicationSecurityGroupAbbreviation": {
+        "value" : "asg"
+      },
+      "applicationSecurityGroupEffect": {
+        "value": "Deny"
+      },
+      "automationAccountAbbreviation": {
+        "value" : "aa"
+      },
+      "automationAccountEffect": {
+        "value": "Deny"
+      },
+      "availabilitySetAbbreviation": {
+        "value" : "avail"
+      },
+      "availabilitySetEffect": {
+        "value": "Deny"
+      },
+      "azureAIServicesMultiServiceAccountAbbreviation": {
+        "value" : "aisa"
+      },
+      "azureAIServicesMultiServiceAccountEffect": {
+        "value": "Deny"
+      },
+      "azureAIVideoIndexerAbbreviation": {
+        "value" : "avi"
+      },
+      "azureAIVideoIndexerEffect": {
+        "value": "Deny"
+      },
+      "azureAnalysisServicesServerAbbreviation": {
+        "value" : "as"
+      },
+      "azureAnalysisServicesServerEffect": {
+        "value": "Deny"
+      },
+      "azureArcEnabledKubernetesClusterAbbreviation": {
+        "value" : "arck"
+      },
+      "azureArcEnabledKubernetesClusterEffect": {
+        "value": "Deny"
+      },
+      "azureArcEnabledServerAbbreviation": {
+        "value" : "arcs"
+      },
+      "azureArcEnabledServerEffect": {
+        "value": "Deny"
+      },
+      "azureBastionAbbreviation": {
+        "value" : "bas"
+      },
+      "azureBastionEffect": {
+        "value": "Deny"
+      },
+      "azureCacheForRedisInstanceAbbreviation": {
+        "value" : "redis"
+      },
+      "azureCacheForRedisInstanceEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBDatabaseAbbreviation": {
+        "value" : "cosmos"
+      },
+      "azureCosmosDBDatabaseEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBForApacheCassandraAccountAbbreviation": {
+        "value" : "coscas"
+      },
+      "azureCosmosDBForApacheCassandraAccountEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBForApacheGremlinAccountAbbreviation": {
+        "value" : "cosgrm"
+      },
+      "azureCosmosDBForApacheGremlinAccountEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBForMongodbAccountAbbreviation": {
+        "value" : "cosmon"
+      },
+      "azureCosmosDBForMongodbAccountEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBForNosqlAccountAbbreviation": {
+        "value" : "cosno"
+      },
+      "azureCosmosDBForNosqlAccountEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBForTableAccountAbbreviation": {
+        "value" : "costab"
+      },
+      "azureCosmosDBForTableAccountEffect": {
+        "value": "Deny"
+      },
+      "azureCosmosDBPostgresqlClusterAbbreviation": {
+        "value" : "cospos"
+      },
+      "azureCosmosDBPostgresqlClusterEffect": {
+        "value": "Deny"
+      },
+      "azureDataExplorerClusterAbbreviation": {
+        "value" : "dec"
+      },
+      "azureDataExplorerClusterEffect": {
+        "value": "Deny"
+      },
+      "azureDataExplorerClusterDatabaseAbbreviation": {
+        "value" : "dedb"
+      },
+      "azureDataExplorerClusterDatabaseEffect": {
+        "value": "Deny"
+      },
+      "azureDataFactoryAbbreviation": {
+        "value" : "adf"
+      },
+      "azureDataFactoryEffect": {
+        "value": "Deny"
+      },
+      "azureDatabricksWorkspaceAbbreviation": {
+        "value" : "dbw"
+      },
+      "azureDatabricksWorkspaceEffect": {
+        "value": "Deny"
+      },
+      "azureDigitalTwinInstanceAbbreviation": {
+        "value" : "dt"
+      },
+      "azureDigitalTwinInstanceEffect": {
+        "value": "Deny"
+      },
+      "azureLabServicesLabPlanAbbreviation": {
+        "value" : "lp"
+      },
+      "azureLabServicesLabPlanEffect": {
+        "value": "Deny"
+      },
+      "azureLoadTestingInstanceAbbreviation": {
+        "value" : "lt"
+      },
+      "azureLoadTestingInstanceEffect": {
+        "value": "Deny"
+      },
+      "azureMachineLearningWorkspaceAbbreviation": {
+        "value" : "mlw"
+      },
+      "azureMachineLearningWorkspaceEffect": {
+        "value": "Deny"
+      },
+      "azureManagedGrafanaAbbreviation": {
+        "value" : "amg"
+      },
+      "azureManagedGrafanaEffect": {
+        "value": "Deny"
+      },
+      "azureMigrateProjectAbbreviation": {
+        "value" : "migr"
+      },
+      "azureMigrateProjectEffect": {
+        "value": "Deny"
+      },
+      "azureMonitorActionGroupAbbreviation": {
+        "value" : "ag"
+      },
+      "azureMonitorActionGroupEffect": {
+        "value": "Deny"
+      },
+      "azureMonitorDataCollectionRulesAbbreviation": {
+        "value" : "dcr"
+      },
+      "azureMonitorDataCollectionRulesEffect": {
+        "value": "Deny"
+      },
+      "azureOpenaiServiceAbbreviation": {
+        "value" : "oai"
+      },
+      "azureOpenaiServiceEffect": {
+        "value": "Deny"
+      },
+      "azureSQLDatabaseAbbreviation": {
+        "value" : "sqldb"
+      },
+      "azureSQLDatabaseEffect": {
+        "value": "Deny"
+      },
+      "azureSQLDatabaseServerAbbreviation": {
+        "value" : "sql"
+      },
+      "azureSQLDatabaseServerEffect": {
+        "value": "Deny"
+      },
+      "azureSQLElasticJobAgentAbbreviation": {
+        "value" : "sqlja"
+      },
+      "azureSQLElasticJobAgentEffect": {
+        "value": "Deny"
+      },
+      "azureSQLElasticPoolAbbreviation": {
+        "value" : "sqlep"
+      },
+      "azureSQLElasticPoolEffect": {
+        "value": "Deny"
+      },
+      "azureStorsimpleAbbreviation": {
+        "value" : "ssimp"
+      },
+      "azureStorsimpleEffect": {
+        "value": "Deny"
+      },
+      "azureStreamAnalyticsAbbreviation": {
+        "value" : "asa"
+      },
+      "azureStreamAnalyticsEffect": {
+        "value": "Deny"
+      },
+      "azureSynapseAnalyticsPrivateLinkHubAbbreviation": {
+        "value" : "synplh"
+      },
+      "azureSynapseAnalyticsPrivateLinkHubEffect": {
+        "value": "Deny"
+      },
+      "azureSynapseAnalyticsSparkPoolAbbreviation": {
+        "value" : "synsp"
+      },
+      "azureSynapseAnalyticsSparkPoolEffect": {
+        "value": "Deny"
+      },
+      "azureSynapseAnalyticsSQLDedicatedPoolAbbreviation": {
+        "value" : "syndp"
+      },
+      "azureSynapseAnalyticsSQLDedicatedPoolEffect": {
+        "value": "Deny"
+      },
+      "azureSynapseAnalyticsWorkspacesAbbreviation": {
+        "value" : "synw"
+      },
+      "azureSynapseAnalyticsWorkspacesEffect": {
+        "value": "Deny"
+      },
+      "backupVaultNameAbbreviation": {
+        "value" : "bk"
+      },
+      "backupVaultNameEffect": {
+        "value": "Deny"
+      },
+      "backupVaultPolicyAbbreviation": {
+        "value" : "bkp"
+      },
+      "backupVaultPolicyEffect": {
+        "value": "Deny"
+      },
+      "batchAccountsAbbreviation": {
+        "value" : "ba"
+      },
+      "batchAccountsEffect": {
+        "value": "Deny"
+      },
+      "blueprintAbbreviation": {
+        "value" : "bp"
+      },
+      "blueprintEffect": {
+        "value": "Deny"
+      },
+      "blueprintAssignmentAbbreviation": {
+        "value" : "bpa"
+      },
+      "blueprintAssignmentEffect": {
+        "value": "Deny"
+      },
+      "botServiceAbbreviation": {
+        "value" : "bot"
+      },
+      "botServiceEffect": {
+        "value": "Deny"
+      },
+      "cDNEndpointAbbreviation": {
+        "value" : "cdne"
+      },
+      "cDNEndpointEffect": {
+        "value": "Deny"
+      },
+      "cDNProfileAbbreviation": {
+        "value" : "cdnp"
+      },
+      "cDNProfileEffect": {
+        "value": "Deny"
+      },
+      "cloudServiceAbbreviation": {
+        "value" : "cld"
+      },
+      "cloudServiceEffect": {
+        "value": "Deny"
+      },
+      "communicationServicesAbbreviation": {
+        "value" : "acs"
+      },
+      "communicationServicesEffect": {
+        "value": "Deny"
+      },
+      "computerVisionAbbreviation": {
+        "value" : "cv"
+      },
+      "computerVisionEffect": {
+        "value": "Deny"
+      },
+      "connectionsAbbreviation": {
+        "value" : "con"
+      },
+      "connectionsEffect": {
+        "value": "Deny"
+      },
+      "containerAppsAbbreviation": {
+        "value" : "ca"
+      },
+      "containerAppsEffect": {
+        "value": "Deny"
+      },
+      "containerAppsEnvironmentAbbreviation": {
+        "value" : "cae"
+      },
+      "containerAppsEnvironmentEffect": {
+        "value": "Deny"
+      },
+      "containerInstanceAbbreviation": {
+        "value" : "ci"
+      },
+      "containerInstanceEffect": {
+        "value": "Deny"
+      },
+      "containerRegistryAbbreviation": {
+        "value" : "cr"
+      },
+      "containerRegistryEffect": {
+        "value": "Deny"
+      },
+      "contentModeratorAbbreviation": {
+        "value" : "cm"
+      },
+      "contentModeratorEffect": {
+        "value": "Deny"
+      },
+      "contentSafetyAbbreviation": {
+        "value" : "cs"
+      },
+      "contentSafetyEffect": {
+        "value": "Deny"
+      },
+      "customVisionPredictionAbbreviation": {
+        "value" : "cstv"
+      },
+      "customVisionPredictionEffect": {
+        "value": "Deny"
+      },
+      "customVisionTrainingAbbreviation": {
+        "value" : "cstvt"
+      },
+      "customVisionTrainingEffect": {
+        "value": "Deny"
+      },
+      "dataCollectionEndpointAbbreviation": {
+        "value" : "dce"
+      },
+      "dataCollectionEndpointEffect": {
+        "value": "Deny"
+      },
+      "dataLakeAnalyticsAccountAbbreviation": {
+        "value" : "dla"
+      },
+      "dataLakeAnalyticsAccountEffect": {
+        "value": "Deny"
+      },
+      "dataLakeStoreAccountAbbreviation": {
+        "value" : "dls"
+      },
+      "dataLakeStoreAccountEffect": {
+        "value": "Deny"
+      },
+      "databaseMigrationServiceInstanceAbbreviation": {
+        "value" : "dms"
+      },
+      "databaseMigrationServiceInstanceEffect": {
+        "value": "Deny"
+      },
+      "ddosProtectionPlanAbbreviation": {
+        "value" : "ddos"
+      },
+      "ddosProtectionPlanEffect": {
+        "value": "Deny"
+      },
+      "diskEncryptionSetAbbreviation": {
+        "value" : "des"
+      },
+      "diskEncryptionSetEffect": {
+        "value": "Deny"
+      },
+      "dNSForwardingRulesetAbbreviation": {
+        "value" : "dnsfrs"
+      },
+      "dNSForwardingRulesetEffect": {
+        "value": "Deny"
+      },
+      "dNSPrivateResolverAbbreviation": {
+        "value" : "dnspr"
+      },
+      "dNSPrivateResolverEffect": {
+        "value": "Deny"
+      },
+      "dNSPrivateResolverInboundEndpointAbbreviation": {
+        "value" : "in"
+      },
+      "dNSPrivateResolverInboundEndpointEffect": {
+        "value": "Deny"
+      },
+      "dNSPrivateResolverOutboundEndpointAbbreviation": {
+        "value" : "out"
+      },
+      "dNSPrivateResolverOutboundEndpointEffect": {
+        "value": "Deny"
+      },
+      "documentIntelligenceAbbreviation": {
+        "value" : "di"
+      },
+      "documentIntelligenceEffect": {
+        "value": "Deny"
+      },
+      "eventGridDomainAbbreviation": {
+        "value" : "evgd"
+      },
+      "eventGridDomainEffect": {
+        "value": "Deny"
+      },
+      "eventGridSubscriptionsAbbreviation": {
+        "value" : "evgs"
+      },
+      "eventGridSubscriptionsEffect": {
+        "value": "Deny"
+      },
+      "eventGridSystemTopicAbbreviation": {
+        "value" : "egst"
+      },
+      "eventGridSystemTopicEffect": {
+        "value": "Deny"
+      },
+      "eventGridTopicAbbreviation": {
+        "value" : "evgt"
+      },
+      "eventGridTopicEffect": {
+        "value": "Deny"
+      },
+      "eventHubAbbreviation": {
+        "value" : "evh"
+      },
+      "eventHubEffect": {
+        "value": "Deny"
+      },
+      "eventHubsNamespaceAbbreviation": {
+        "value" : "evhns"
+      },
+      "eventHubsNamespaceEffect": {
+        "value": "Deny"
+      },
+      "expressrouteCircuitAbbreviation": {
+        "value" : "erc"
+      },
+      "expressrouteCircuitEffect": {
+        "value": "Deny"
+      },
+      "expressrouteGatewayAbbreviation": {
+        "value" : "ergw"
+      },
+      "expressrouteGatewayEffect": {
+        "value": "Deny"
+      },
+      "faceAPIAbbreviation": {
+        "value" : "face"
+      },
+      "faceAPIEffect": {
+        "value": "Deny"
+      },
+      "fileShareAbbreviation": {
+        "value" : "share"
+      },
+      "fileShareEffect": {
+        "value": "Deny"
+      },
+      "firewallAbbreviation": {
+        "value" : "afw"
+      },
+      "firewallEffect": {
+        "value": "Deny"
+      },
+      "firewallPolicyAbbreviation": {
+        "value" : "afwp"
+      },
+      "firewallPolicyEffect": {
+        "value": "Deny"
+      },
+      "frontDoorEndpointAbbreviation": {
+        "value" : "fde"
+      },
+      "frontDoorEndpointEffect": {
+        "value": "Deny"
+      },
+      "frontDoorFirewallPolicyAbbreviation": {
+        "value" : "fdfp"
+      },
+      "frontDoorFirewallPolicyEffect": {
+        "value": "Deny"
+      },
+      "frontDoorProfileAbbreviation": {
+        "value" : "afd"
+      },
+      "frontDoorProfileEffect": {
+        "value": "Deny"
+      },
+      "functionAppAbbreviation": {
+        "value" : "func"
+      },
+      "functionAppEffect": {
+        "value": "Deny"
+      },
+      "galleryAbbreviation": {
+        "value" : "gal"
+      },
+      "galleryEffect": {
+        "value": "Deny"
+      },
+      "hdinsightHadoopClusterAbbreviation": {
+        "value" : "hadoop"
+      },
+      "hdinsightHadoopClusterEffect": {
+        "value": "Deny"
+      },
+      "hdinsightHbaseClusterAbbreviation": {
+        "value" : "hbase"
+      },
+      "hdinsightHbaseClusterEffect": {
+        "value": "Deny"
+      },
+      "hdinsightKafkaClusterAbbreviation": {
+        "value" : "kafka"
+      },
+      "hdinsightKafkaClusterEffect": {
+        "value": "Deny"
+      },
+      "hdinsightMLServicesClusterAbbreviation": {
+        "value" : "mls"
+      },
+      "hdinsightMLServicesClusterEffect": {
+        "value": "Deny"
+      },
+      "hdinsightSparkClusterAbbreviation": {
+        "value" : "spark"
+      },
+      "hdinsightSparkClusterEffect": {
+        "value": "Deny"
+      },
+      "hdinsightStormClusterAbbreviation": {
+        "value" : "storm"
+      },
+      "hdinsightStormClusterEffect": {
+        "value": "Deny"
+      },
+      "healthInsightsAbbreviation": {
+        "value" : "hi"
+      },
+      "healthInsightsEffect": {
+        "value": "Deny"
+      },
+      "hostingEnvironmentAbbreviation": {
+        "value" : "host"
+      },
+      "hostingEnvironmentEffect": {
+        "value": "Deny"
+      },
+      "imageTemplateAbbreviation": {
+        "value" : "it"
+      },
+      "imageTemplateEffect": {
+        "value": "Deny"
+      },
+      "immersiveReaderAbbreviation": {
+        "value" : "ir"
+      },
+      "immersiveReaderEffect": {
+        "value": "Deny"
+      },
+      "integrationAccountAbbreviation": {
+        "value" : "ia"
+      },
+      "integrationAccountEffect": {
+        "value": "Deny"
+      },
+      "iotHubAbbreviation": {
+        "value" : "iot"
+      },
+      "iotHubEffect": {
+        "value": "Deny"
+      },
+      "iPGroupAbbreviation": {
+        "value" : "ipg"
+      },
+      "iPGroupEffect": {
+        "value": "Deny"
+      },
+      "keyVaultAbbreviation": {
+        "value" : "kv"
+      },
+      "keyVaultEffect": {
+        "value": "Deny"
+      },
+      "keyVaultManagedHSMAbbreviation": {
+        "value" : "kvmhsm"
+      },
+      "keyVaultManagedHSMEffect": {
+        "value": "Deny"
+      },
+      "languageServiceAbbreviation": {
+        "value" : "lang"
+      },
+      "languageServiceEffect": {
+        "value": "Deny"
+      },
+      "loadBalancerExternalAbbreviation": {
+        "value" : "lbe"
+      },
+      "loadBalancerExternalEffect": {
+        "value": "Deny"
+      },
+      "loadBalancerInternalAbbreviation": {
+        "value" : "lbi"
+      },
+      "loadBalancerInternalEffect": {
+        "value": "Deny"
+      },
+      "loadBalancerRuleAbbreviation": {
+        "value" : "rule"
+      },
+      "loadBalancerRuleEffect": {
+        "value": "Deny"
+      },
+      "localNetworkGatewayAbbreviation": {
+        "value" : "lgw"
+      },
+      "localNetworkGatewayEffect": {
+        "value": "Deny"
+      },
+      "logAnalyticsQueryPacksAbbreviation": {
+        "value" : "pack"
+      },
+      "logAnalyticsQueryPacksEffect": {
+        "value": "Deny"
+      },
+      "logAnalyticsWorkspaceAbbreviation": {
+        "value" : "log"
+      },
+      "logAnalyticsWorkspaceEffect": {
+        "value": "Deny"
+      },
+      "LogicAppAbbreviation": {
+        "value" : "logic"
+      },
+      "LogicAppEffect": {
+        "value": "Deny"
+      },
+      "managedDiskDataAbbreviation": {
+        "value" : "disk"
+      },
+      "managedDiskDataEffect": {
+        "value": "Deny"
+      },
+      "managedDiskOSAbbreviation": {
+        "value" : "osdisk"
+      },
+      "managedDiskOSEffect": {
+        "value": "Deny"
+      },
+      "managedIdentityAbbreviation": {
+        "value" : "id"
+      },
+      "managedIdentityEffect": {
+        "value": "Deny"
+      },
+      "managementGroupAbbreviation": {
+        "value" : "mg"
+      },
+      "managementGroupEffect": {
+        "value": "Deny"
+      },
+      "mapsAccountAbbreviation": {
+        "value" : "map"
+      },
+      "mapsAccountEffect": {
+        "value": "Deny"
+      },
+      "mariadbDatabaseAbbreviation": {
+        "value" : "mariadb"
+      },
+      "mariadbDatabaseEffect": {
+        "value": "Deny"
+      },
+      "mariadbServerAbbreviation": {
+        "value" : "maria"
+      },
+      "mariadbServerEffect": {
+        "value": "Deny"
+      },
+      "microsoftPurviewInstanceAbbreviation": {
+        "value" : "pview"
+      },
+      "microsoftPurviewInstanceEffect": {
+        "value": "Deny"
+      },
+      "mysqlDatabaseAbbreviation": {
+        "value" : "mysql"
+      },
+      "mysqlDatabaseEffect": {
+        "value": "Deny"
+      },
+      "nATGatewayAbbreviation": {
+        "value" : "ng"
+      },
+      "nATGatewayEffect": {
+        "value": "Deny"
+      },
+      "networkInterfaceAbbreviation": {
+        "value" : "nic"
+      },
+      "networkInterfaceEffect": {
+        "value": "Deny"
+      },
+      "networkSecurityGroupAbbreviation": {
+        "value" : "nsg"
+      },
+      "networkSecurityGroupEffect": {
+        "value": "Deny"
+      },
+      "networkSecurityGroupSecurityRulesAbbreviation": {
+        "value" : "nsgsr"
+      },
+      "networkSecurityGroupSecurityRulesEffect": {
+        "value": "Deny"
+      },
+      "networkWatcherAbbreviation": {
+        "value" : "nw"
+      },
+      "networkWatcherEffect": {
+        "value": "Deny"
+      },
+      "notificationHubsAbbreviation": {
+        "value" : "ntf"
+      },
+      "notificationHubsEffect": {
+        "value": "Deny"
+      },
+      "notificationHubsNamespaceAbbreviation": {
+        "value" : "ntfns"
+      },
+      "notificationHubsNamespaceEffect": {
+        "value": "Deny"
+      },
+      "postgresqlDatabaseAbbreviation": {
+        "value" : "psql"
+      },
+      "postgresqlDatabaseEffect": {
+        "value": "Deny"
+      },
+      "powerBIEmbeddedAbbreviation": {
+        "value" : "pbi"
+      },
+      "powerBIEmbeddedEffect": {
+        "value": "Deny"
+      },
+      "privateEndpointAbbreviation": {
+        "value" : "pep"
+      },
+      "privateEndpointEffect": {
+        "value": "Deny"
+      },
+      "privateLinkAbbreviation": {
+        "value" : "pl"
+      },
+      "privateLinkEffect": {
+        "value": "Deny"
+      },
+      "provisioningServicesAbbreviation": {
+        "value" : "provs"
+      },
+      "provisioningServicesEffect": {
+        "value": "Deny"
+      },
+      "provisioningServicesCertificateAbbreviation": {
+        "value" : "pcert"
+      },
+      "provisioningServicesCertificateEffect": {
+        "value": "Deny"
+      },
+      "proximityPlacementGroupAbbreviation": {
+        "value" : "ppg"
+      },
+      "proximityPlacementGroupEffect": {
+        "value": "Deny"
+      },
+      "publicIPAddressAbbreviation": {
+        "value" : "pip"
+      },
+      "publicIPAddressEffect": {
+        "value": "Deny"
+      },
+      "publicIPAddressPrefixAbbreviation": {
+        "value" : "ippre"
+      },
+      "publicIPAddressPrefixEffect": {
+        "value": "Deny"
+      },
+      "recoveryServicesVaultAbbreviation": {
+        "value" : "rsv"
+      },
+      "recoveryServicesVaultEffect": {
+        "value": "Deny"
+      },
+      "restorePointCollectionAbbreviation": {
+        "value" : "rpc"
+      },
+      "restorePointCollectionEffect": {
+        "value": "Deny"
+      },
+      "routeFilterAbbreviation": {
+        "value" : "rf"
+      },
+      "routeFilterEffect": {
+        "value": "Deny"
+      },
+      "routeServerAbbreviation": {
+        "value" : "rtserv"
+      },
+      "routeServerEffect": {
+        "value": "Deny"
+      },
+      "routeTableAbbreviation": {
+        "value" : "rt"
+      },
+      "routeTableEffect": {
+        "value": "Deny"
+      },
+      "serviceBusNamespaceAbbreviation": {
+        "value" : "sbns"
+      },
+      "serviceBusNamespaceEffect": {
+        "value": "Deny"
+      },
+      "serviceBusQueueAbbreviation": {
+        "value" : "sbq"
+      },
+      "serviceBusQueueEffect": {
+        "value": "Deny"
+      },
+      "serviceBusTopicAbbreviation": {
+        "value" : "sbt"
+      },
+      "serviceBusTopicEffect": {
+        "value": "Deny"
+      },
+      "serviceBusTopicSubscriptionAbbreviation": {
+        "value" : "sbts"
+      },
+      "serviceBusTopicSubscriptionEffect": {
+        "value": "Deny"
+      },
+      "serviceEndpointPolicyAbbreviation": {
+        "value" : "se"
+      },
+      "serviceEndpointPolicyEffect": {
+        "value": "Deny"
+      },
+      "serviceFabricClusterAbbreviation": {
+        "value" : "sf"
+      },
+      "serviceFabricClusterEffect": {
+        "value": "Deny"
+      },
+      "serviceFabricManagedClusterAbbreviation": {
+        "value" : "sfmc"
+      },
+      "serviceFabricManagedClusterEffect": {
+        "value": "Deny"
+      },
+      "signalrAbbreviation": {
+        "value" : "sigr"
+      },
+      "signalrEffect": {
+        "value": "Deny"
+      },
+      "snapshotAbbreviation": {
+        "value" : "snap"
+      },
+      "snapshotEffect": {
+        "value": "Deny"
+      },
+      "speechServiceAbbreviation": {
+        "value" : "spch"
+      },
+      "speechServiceEffect": {
+        "value": "Deny"
+      },
+      "sQLManagedInstanceAbbreviation": {
+        "value" : "sqlmi"
+      },
+      "sQLManagedInstanceEffect": {
+        "value": "Deny"
+      },
+      "sQLServerStretchDatabaseAbbreviation": {
+        "value" : "sqlstrdb"
+      },
+      "sQLServerStretchDatabaseEffect": {
+        "value": "Deny"
+      },
+      "sSHKeyAbbreviation": {
+        "value" : "sshkey"
+      },
+      "sSHKeyEffect": {
+        "value": "Deny"
+      },
+      "staticWebAppAbbreviation": {
+        "value" : "stapp"
+      },
+      "staticWebAppEffect": {
+        "value": "Deny"
+      },
+      "storageAccountAbbreviation": {
+        "value" : "st"
+      },
+      "storageAccountEffect": {
+        "value": "Deny"
+      },
+      "storageSyncServiceNameAbbreviation": {
+        "value" : "sss"
+      },
+      "storageSyncServiceNameEffect": {
+        "value": "Deny"
+      },
+      "templateSpecsNameAbbreviation": {
+        "value" : "ts"
+      },
+      "templateSpecsNameEffect": {
+        "value": "Deny"
+      },
+      "timeSeriesInsightsEnvironmentAbbreviation": {
+        "value" : "tsi"
+      },
+      "timeSeriesInsightsEnvironmentEffect": {
+        "value": "Deny"
+      },
+      "trafficManagerProfileAbbreviation": {
+        "value" : "traf"
+      },
+      "trafficManagerProfileEffect": {
+        "value": "Deny"
+      },
+      "translatorAbbreviation": {
+        "value" : "trsl"
+      },
+      "translatorEffect": {
+        "value": "Deny"
+      },
+      "userDefinedRouteAbbreviation": {
+        "value" : "udr"
+      },
+      "userDefinedRouteEffect": {
+        "value": "Deny"
+      },
+      "virtualDesktopApplicationGroupAbbreviation": {
+        "value" : "vdag"
+      },
+      "virtualDesktopApplicationGroupEffect": {
+        "value": "Deny"
+      },
+      "virtualDesktopHostPoolAbbreviation": {
+        "value" : "vdpool"
+      },
+      "virtualDesktopHostPoolEffect": {
+        "value": "Deny"
+      },
+      "virtualDesktopScalingPlanAbbreviation": {
+        "value" : "vdscaling"
+      },
+      "virtualDesktopScalingPlanEffect": {
+        "value": "Deny"
+      },
+      "virtualDesktopWorkspaceAbbreviation": {
+        "value" : "vdws"
+      },
+      "virtualDesktopWorkspaceEffect": {
+        "value": "Deny"
+      },
+      "virtualMachineAbbreviation": {
+        "value" : "vm"
+      },
+      "virtualMachineEffect": {
+        "value": "Deny"
+      },
+      "virtualMachineMaintenanceConfigurationAbbreviation": {
+        "value" : "mc"
+      },
+      "virtualMachineMaintenanceConfigurationEffect": {
+        "value": "Deny"
+      },
+      "virtualMachineScaleSetAbbreviation": {
+        "value" : "vmss"
+      },
+      "virtualMachineScaleSetEffect": {
+        "value": "Deny"
+      },
+      "virtualNetworkAbbreviation": {
+        "value" : "vnet"
+      },
+      "virtualNetworkEffect": {
+        "value": "Deny"
+      },
+      "virtualNetworkGatewayAbbreviation": {
+        "value" : "vgw"
+      },
+      "virtualNetworkGatewayEffect": {
+        "value": "Deny"
+      },
+      "virtualNetworkManagerAbbreviation": {
+        "value" : "vnm"
+      },
+      "virtualNetworkManagerEffect": {
+        "value": "Deny"
+      },
+      "virtualNetworkPeeringAbbreviation": {
+        "value" : "peer"
+      },
+      "virtualNetworkPeeringEffect": {
+        "value": "Deny"
+      },
+      "virtualNetworkSubnetAbbreviation": {
+        "value" : "snet"
+      },
+      "virtualNetworkSubnetEffect": {
+        "value": "Deny"
+      },
+      "virtualWANAbbreviation": {
+        "value" : "vwan"
+      },
+      "virtualWANEffect": {
+        "value": "Deny"
+      },
+      "virtualWANHubAbbreviation": {
+        "value" : "vhub"
+      },
+      "virtualWANHubEffect": {
+        "value": "Deny"
+      },
+      "vMStorageAccountAbbreviation": {
+        "value" : "stvm"
+      },
+      "vMStorageAccountEffect": {
+        "value": "Deny"
+      },
+      "vPNConnectionAbbreviation": {
+        "value" : "vcn"
+      },
+      "vPNConnectionEffect": {
+        "value": "Deny"
+      },
+      "vPNGatewayAbbreviation": {
+        "value" : "vpng"
+      },
+      "vPNGatewayEffect": {
+        "value": "Deny"
+      },
+      "vPNSiteAbbreviation": {
+        "value" : "vst"
+      },
+      "vPNSiteEffect": {
+        "value": "Deny"
+      },
+      "webAppAbbreviation": {
+        "value" : "app"
+      },
+      "webAppEffect": {
+        "value": "Deny"
+      },
+      "webApplicationFirewallPolicyAbbreviation": {
+        "value" : "waf"
+      },
+      "webApplicationFirewallPolicyEffect": {
+        "value": "Deny"
+      },
+      "webApplicationFirewallPolicyRuleGroupAbbreviation": {
+        "value" : "wafrg"
+      },
+      "webApplicationFirewallPolicyRuleGroupEffect": {
+        "value": "Deny"
+      },
+      "webpubsubAbbreviation": {
+        "value" : "wps"
+      },
+      "webpubsubEffect": {
+        "value": "Deny"
+      }
+    },
+    "scope": "${current_scope_resource_id}",
+    "notScopes": []
+  },
+  "location": "${default_location}",
+  "identity": {
+    "type": "None"
+  }
+}
