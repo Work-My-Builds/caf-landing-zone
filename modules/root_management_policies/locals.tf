@@ -2,20 +2,20 @@ locals {
   root_scope_resource_id = "/providers/Microsoft.Management/managementGroups/${var.root_scope_resource_id}"
 
   policy_definitions = flatten(
-    [for file in fileset("${path.root}", "archetypes/policy_definitions/*.json") :
-      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
+    [for file in fileset(".${path.root}", "archetypes/policy_definitions/*.json") :
+      jsondecode(replace(file(".${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
     ]
   )
 
   policy_set_definitions = flatten(
-    [for file in fileset("${path.root}", "archetypes/policy_set_definitions/*.json") :
-      jsondecode(replace(file("${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
+    [for file in fileset(".${path.root}", "archetypes/policy_set_definitions/*.json") :
+      jsondecode(replace(file(".${path.root}/${file}"), "$${root_scope_resource_id}", local.root_scope_resource_id))
     ]
   )
 
   policy_assignments = flatten(
-    [for file in fileset("${path.root}", "archetypes/policy_assignments/*.json") :
-      jsondecode(templatefile("${path.root}/${file}", {
+    [for file in fileset(".${path.root}", "archetypes/policy_assignments/*.json") :
+      jsondecode(templatefile(".${path.root}/${file}", {
         root_scope_resource_id    = "${local.root_scope_resource_id}"
         current_scope_resource_id = "${local.root_scope_resource_id}"
         default_location          = "${var.location}"

@@ -1,3 +1,17 @@
+# Create Root Management Group
+data "azurerm_management_group" "root_management_group" {
+  name = var.root_scope_resource_id
+}
+
+# Create Child Management Group
+resource "azurerm_management_group" "child_management_group" {
+  for_each = toset(var.child_management_groups)
+
+  name                       = "${data.azurerm_management_group.root_management_group.name}-${lower(replace(each.value, " ", ""))}"
+  display_name               = each.value
+  parent_management_group_id = data.azurerm_management_group.root_management_group.id
+}
+
 # Create Azure Policy Defition
 resource "azurerm_policy_definition" "policy_definition" {
   for_each = {
@@ -28,6 +42,7 @@ resource "azurerm_policy_set_definition" "policy_set_definition" {
   description         = each.value.properties.description
   management_group_id = local.root_scope_resource_id
 
+  metadata   = jsonencode(each.value.properties.metadata)
   parameters = jsonencode(each.value.properties.parameters) != "{}" ? "${jsonencode(each.value.properties.parameters)}" : null
 
   dynamic "policy_definition_reference" {

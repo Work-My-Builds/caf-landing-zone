@@ -1,12 +1,3 @@
-variable "prefix" {
-  type        = string
-  description = "Prefix of the name of the all resources"
-}
-
-variable "business_code" {
-  type = string
-}
-
 variable "environment" {
   type = string
 }
@@ -32,7 +23,17 @@ variable "onpremise_address_space" {
 }
 
 variable "log_analytics_workspace_id" {
-  type = string
+  type    = string
+  default = null
+}
+
+variable "vpn_client_configuration" {
+  type = object({
+    address_space        = list(string)
+    vpn_client_protocols = optional(list(string), ["SSTP"])
+    vpn_auth_types       = optional(list(string), ["Certificate"])
+    root_certificate     = optional(any, {})
+  })
 }
 
 variable "onpremise_bgp_peering_settings" {
@@ -41,8 +42,5 @@ variable "onpremise_bgp_peering_settings" {
     bgp_peering_address = string
   }))
   description = "On premise gateway BGP IP address"
-  default = [{
-    asn                 = null
-    bgp_peering_address = null
-  }]
+  default     = []
 }

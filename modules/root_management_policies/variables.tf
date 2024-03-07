@@ -3,6 +3,10 @@ variable "root_scope_resource_id" {
   default = ""
 }
 
+variable "child_management_groups" {
+  type    = list(string)
+  default = []
+}
 
 variable "location" {
   type = string

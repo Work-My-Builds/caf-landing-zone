@@ -48,16 +48,24 @@ resource "azurerm_log_analytics_workspace" "oms" {
 }
 
 resource "azurerm_storage_account" "sa" {
-  name                          = local.storage_account_name
-  location                      = azurerm_resource_group.mon_rg.location
-  resource_group_name           = azurerm_resource_group.mon_rg.name
-  account_tier                  = "Standard"
-  account_replication_type      = "LRS"
-  public_network_access_enabled = false
-
-  #network_rules {
-  #  default_action = "Deny"
-  #}
+  name                            = local.storage_account_name
+  location                        = azurerm_resource_group.mon_rg.location
+  resource_group_name             = azurerm_resource_group.mon_rg.name
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  public_network_access_enabled   = false
+  allow_nested_items_to_be_public = false
+  share_properties {
+    retention_policy {
+      days = 7
+    }
+    smb {
+      versions = ["SMB3.0", "SMB3.1.1"]
+    }
+  }
+  network_rules {
+    default_action = "Deny"
+  }
 }
 
 resource "azurerm_monitor_data_collection_rule" "dcr" {

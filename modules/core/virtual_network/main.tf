@@ -25,10 +25,16 @@ resource "azurerm_network_ddos_protection_plan" "ddos" {
   resource_group_name = azurerm_resource_group.network_rg.name
 }
 
+resource "azurerm_network_watcher" "networkwatcher" {
+  name                = local.network_watcher_name
+  location            = azurerm_resource_group.network_rg.location
+  resource_group_name = azurerm_resource_group.network_rg.name
+}
+
 resource "azurerm_virtual_network" "vnet" {
   name                = local.virtual_network_name
   location            = azurerm_resource_group.network_rg.location
-  resource_group_name = azurerm_resource_group.network_rg.name
+  resource_group_name = azurerm_network_watcher.networkwatcher.resource_group_name
   address_space       = var.network_address_space
   dns_servers         = var.network_dns_address
 
@@ -49,10 +55,11 @@ resource "azurerm_subnet" "subnet" {
     for subnet in local.subnets : subnet.name => subnet
   }
 
-  name                 = each.value.name
-  resource_group_name  = azurerm_virtual_network.vnet.resource_group_name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [each.value.address_prefixes]
+  name                                      = each.value.name
+  resource_group_name                       = azurerm_virtual_network.vnet.resource_group_name
+  virtual_network_name                      = azurerm_virtual_network.vnet.name
+  address_prefixes                          = [each.value.address_prefixes]
+  private_endpoint_network_policies_enabled = lower(split("-", each.value.name)[length(split("-", each.value.name)) - 1]) == "web" ? false : true
 
   dynamic "delegation" {
     for_each = lower(split("-", each.value.name)[length(split("-", each.value.name)) - 1]) == "web" ? [1] : []

@@ -1,14 +1,15 @@
 locals {
-  geo_codes      = jsondecode(templatefile("${path.root}/assets/geo-codes.json", {}))
-  resource_codes = jsondecode(templatefile("${path.root}/assets/resource-codes.json", {}))
+  geo_codes      = jsondecode(templatefile(".${path.root}/assets/geo-codes.json", {}))
+  resource_codes = jsondecode(templatefile(".${path.root}/assets/resource-codes.json", {}))
 
-  vnet_resource_group_name    = lower("${var.prefix}-${local.resource_codes.resources["Resource group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  ddos_name                   = lower("${var.prefix}-${local.resource_codes.resources["DDOS Protection plan"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  virtual_network_name        = lower("${var.prefix}-${local.resource_codes.resources["Virtual network"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  network_security_group_name = lower("${var.prefix}-${local.resource_codes.resources["Network security group"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
-  route_table_name            = lower("${var.prefix}-${local.resource_codes.resources["Route table"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}-01")
+  vnet_resource_group_name    = upper("${local.resource_codes.resources["Resource Group"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  ddos_name                   = lower("${local.resource_codes.resources["DDOS Protection Plan"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  network_watcher_name        = lower("${local.resource_codes.resources["Network Watcher"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  virtual_network_name        = lower("${local.resource_codes.resources["Virtual Network"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  network_security_group_name = lower("${local.resource_codes.resources["Network Security Group"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  route_table_name            = lower("${local.resource_codes.resources["Route Table"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
 
-  subnet_prefix = lower("${var.prefix}-${local.resource_codes.resources["Virtual network subnet"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.business_code}-${var.environment}")
+  subnet_prefix = lower("${local.resource_codes.resources["Virtual Network Subnet"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.environment}")
 
   address_cidr = split("/", var.network_address_space[0])[1]
 

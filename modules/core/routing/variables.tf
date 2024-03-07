@@ -1,3 +1,7 @@
+#variable "location" {
+#  type = string
+#}
+
 variable "routes" {
   type    = any
   default = {}

@@ -18,8 +18,6 @@ resource "azurerm_public_ip" "vpn_pip" {
   resource_group_name = data.azurerm_virtual_network.vnet.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
-
-  zones = [1, 2, 3]
 }
 
 resource "azurerm_firewall_policy" "afwp" {
@@ -78,9 +76,9 @@ resource "azurerm_virtual_network_gateway" "vpn" {
   type                = "Vpn"
   vpn_type            = "RouteBased"
 
-  enable_bgp    = true
+  enable_bgp    = false
   active_active = false
-  sku           = "VpnGw2AZ"
+  sku           = "VpnGw2"
   generation    = "Generation2"
 
   ip_configuration {
@@ -90,8 +88,22 @@ resource "azurerm_virtual_network_gateway" "vpn" {
     private_ip_address_allocation = "Dynamic"
   }
 
-  bgp_settings {
-    asn = 65515
+  vpn_client_configuration {
+    address_space        = var.vpn_client_configuration.address_space
+    vpn_client_protocols = var.vpn_client_configuration.vpn_client_protocols
+    vpn_auth_types       = var.vpn_client_configuration.vpn_auth_types
+
+    dynamic "root_certificate" {
+      for_each = var.vpn_client_configuration.root_certificate
+      iterator = rc
+
+      content {
+        name             = rc.key
+        public_cert_data = <<EOF
+${rc.value.public_cert_data}
+        EOF
+      }
+    }
   }
 
   depends_on = [
