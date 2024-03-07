@@ -24,6 +24,17 @@ module "user_role_assignment" {
   principal_id          = data.azuread_user.user["${each.value.user}|${each.value.role_identifier}"].object_id
 }
 
+module "role_assignment" {
+  source = "git::https://dev.azure.com/sargentlundy/SargentLundy_DevOps/_git/Terraform_Modules//role_assignments"
+
+  for_each = var.mon_identity_id != "" ? toset(local.identity_role_definitions) : []
+
+  name                  = each.value
+  scope                 = data.azurerm_subscription.subscription.id
+  role_definition_scope = data.azurerm_subscription.subscription.id
+  principal_id          = var.mon_identity_principal_id
+}
+
 module "monitoring" {
   source = "git::https://dev.azure.com/sargentlundy/SargentLundy_DevOps/_git/Terraform_Modules//management/monitoring"
 

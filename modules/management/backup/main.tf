@@ -26,7 +26,7 @@ resource "azurerm_user_assigned_identity" "uai" {
 }
 
 module "role_assignment" {
-  source = "../../role_assignments"
+  source = "git::https://dev.azure.com/sargentlundy/SargentLundy_DevOps/_git/Terraform_Modules//role_assignments"
 
   for_each = toset(local.role_definitions)
 

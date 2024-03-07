@@ -120,6 +120,11 @@ variable "mon_identity_id" {
   default = ""
 }
 
+variable "mon_identity_principal_id" {
+  type    = string
+  default = ""
+}
+
 variable "mon_log_analytics_workspace_id" {
   type    = string
   default = ""

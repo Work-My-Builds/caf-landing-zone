@@ -55,6 +55,19 @@ locals {
     ]
   )
 
+  identity_role_definitions = [
+    "Backup Contributor",
+    "Contributor",
+    "Log Analytics Contributor",
+    "Monitoring Contributor",
+    "Security Admin",
+    "SQL Security Manager",
+    "SQL Server Contributor",
+    "Storage Account Contributor",
+    "SQL Managed Instance Contributor",
+    "Virtual Machine Contributor"
+  ]
+
   roles = [
     "Application-Owners",
     "Network-Management",

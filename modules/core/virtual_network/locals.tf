@@ -7,9 +7,9 @@ locals {
   network_watcher_name        = lower("${local.resource_codes.resources["Network Watcher"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
   virtual_network_name        = lower("${local.resource_codes.resources["Virtual Network"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
   network_security_group_name = lower("${local.resource_codes.resources["Network Security Group"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
-  route_table_name            = lower("${local.resource_codes.resources["Route Table"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}01")
+  route_table_name            = lower("${local.resource_codes.resources["Route Table"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}")
 
-  subnet_prefix = lower("${local.resource_codes.resources["Virtual Network Subnet"].abbreviation}-${local.geo_codes.codes[var.location].shortName}-${var.environment}")
+  subnet_prefix = lower("${local.resource_codes.resources["Virtual Network Subnet"].abbreviation}-net-${local.geo_codes.codes[var.location].shortName}-${var.environment}")
 
   address_cidr = split("/", var.network_address_space[0])[1]
 
@@ -17,7 +17,8 @@ locals {
     "AzureFirewallSubnet:24",
     "AzureBastionSubnet:24",
     "DomainController:24",
-    "GatewaySubnet:24"
+    "GatewaySubnet:24",
+    "Automation:28"
   ]
   network_subnet = var.enable_hub_network == true ? local.hub_subnets : var.subnets
 
@@ -26,8 +27,9 @@ locals {
   ]
   subnets = flatten(
     [for sub in toset(local.network_subnet) : {
-      name             = split(":", sub)[0] == "AzureFirewallSubnet" || split(":", sub)[0] == "AzureBastionSubnet" || split(":", sub)[0] == "DomainController" || split(":", sub)[0] == "GatewaySubnet" ? split(":", sub)[0] : lower("${local.subnet_prefix}-${lower(split(":", sub)[0])}")
+      name             = split(":", sub)[0] == "AzureFirewallSubnet" || split(":", sub)[0] == "AzureBastionSubnet" || split(":", sub)[0] == "DomainController" || split(":", sub)[0] == "GatewaySubnet" ? split(":", sub)[0] : lower("${local.subnet_prefix}${lower(split(":", sub)[0])}")
       address_prefixes = cidrsubnets(var.network_address_space[0], local.subnet_cidrs[*]...)[index(local.network_subnet, sub)]
+      identifier       = split(":", sub)[0]
       }
     ]
   )
@@ -45,14 +47,14 @@ locals {
   peering = flatten(
     [for peer in toset(var.peered_vnet_id) :
       {
-        peer                         = compact(split(":", peer))[1]
-        peer_to_hub                  = lower(compact(split(":", peer))[0])
-        peering_id                   = compact(split(":", peer))[1]
-        peering_name                 = split("/", compact(split(":", peer))[1])[8]
+        peer                         = trimspace(split(":", peer)[1])
+        peer_to_hub                  = lower(split(":", peer)[0])
+        peering_id                   = trimspace(split(":", peer)[1])
+        peering_name                 = split("/", trimspace(split(":", peer)[1]))[8]
         allow_virtual_network_access = true
         allow_forwarded_traffic      = true
         allow_gateway_transit        = var.enable_hub_network == true ? true : false
-        use_remote_gateways          = var.enable_hub_network == true ? false : (lower(compact(split(":", peer))[0]) == "hub" ? true : false)
+        use_remote_gateways          = var.enable_hub_network == true ? false : (lower(split(":", peer)[0]) == "hub" ? true : false)
       }
     ]
   )

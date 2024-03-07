@@ -75,48 +75,51 @@ resource "azurerm_subnet" "subnet" {
   }
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = local.network_security_group_name
-  location            = azurerm_resource_group.network_rg.location
-  resource_group_name = azurerm_resource_group.network_rg.name
-}
+#resource "azurerm_network_security_group" "nsg" {
+#  for_each = {
+#    for nsg in local.subnets : nsg.name => nsg
+#    if nsg.name != "AzureFirewallSubnet" || nsg.name != "AzureBastionSubnet"
+#  }
+#  name                = "${local.network_security_group_name}"
+#  location            = azurerm_resource_group.network_rg.location
+#  resource_group_name = azurerm_resource_group.network_rg.name
+#}
 
 resource "azurerm_route_table" "rt" {
-  name                          = local.route_table_name
+  for_each = {
+    for rt in local.subnets : rt.name => rt
+    if (rt.name != "AzureFirewallSubnet" && rt.name != "AzureBastionSubnet")
+  }
+  name                          = "${local.route_table_name}${each.value.identifier}"
   location                      = azurerm_resource_group.network_rg.location
   resource_group_name           = azurerm_resource_group.network_rg.name
   disable_bgp_route_propagation = false
 }
 
-resource "azurerm_subnet_network_security_group_association" "nsg_association" {
-  for_each = {
-    for subnet in local.subnets : subnet.name => subnet
-    if var.enable_hub_network != true
-  }
-
-  subnet_id                 = azurerm_subnet.subnet[each.value.name].id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
+#resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+#  subnet_id                 = azurerm_subnet.subnet[each.value.name].id
+#  network_security_group_id = azurerm_network_security_group.nsg.id
+#}
 
 resource "azurerm_subnet_route_table_association" "gateway_rt_association" {
   for_each = {
-    for subnet in local.subnets : subnet.name => subnet
-    if var.enable_hub_network == true && subnet.name == "GatewaySubnet"
+    for rt in local.subnets : rt.name => rt
+    if (rt.name != "AzureFirewallSubnet" && rt.name != "AzureBastionSubnet")
   }
 
   subnet_id      = azurerm_subnet.subnet[each.value.name].id
-  route_table_id = azurerm_route_table.rt.id
+  route_table_id = azurerm_route_table.rt[each.value.name].id
 }
 
-resource "azurerm_subnet_route_table_association" "rt_association" {
-  for_each = {
-    for subnet in local.subnets : subnet.name => subnet
-    if var.enable_hub_network != true
-  }
-
-  subnet_id      = azurerm_subnet.subnet[each.value.name].id
-  route_table_id = azurerm_route_table.rt.id
-}
+#resource "azurerm_subnet_route_table_association" "rt_association" {
+#  for_each = {
+#    for subnet in local.subnets : subnet.name => subnet
+#    if var.enable_hub_network != true
+#  }
+#
+#  subnet_id      = azurerm_subnet.subnet[each.value.name].id
+#  route_table_id = azurerm_route_table.rt.id
+#}
 
 resource "azurerm_virtual_network_peering" "peering" {
   for_each = {
