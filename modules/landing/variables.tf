@@ -130,12 +130,12 @@ variable "mon_storage_account_id" {
   default = ""
 }
 
-variable "backup_dentity_id" {
+variable "backup_identity_id" {
   type    = string
   default = ""
 }
 
-variable "backup_backup_policy_id" {
+variable "backup_policy_id" {
   type    = string
   default = ""
 }

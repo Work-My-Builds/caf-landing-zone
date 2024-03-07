@@ -103,13 +103,13 @@ resource "azurerm_subscription_policy_assignment" "backup_policy_assignment" {
         "value": "${var.location}"
       },
       "backupPolicyId": {
-        "value": "${var.enable_backup == true ? module.backup[0].backup_policy_id : var.backup_backup_policy_id}"
+        "value": "${var.enable_backup == true ? module.backup[0].backup_policy_id : var.backup_policy_id}"
       }
     }
   PARAMETERS
 
   identity {
     type         = "UserAssigned"
-    identity_ids = [var.enable_backup == true ? module.backup[0].identity_id : var.backup_dentity_id]
+    identity_ids = [var.enable_backup == true ? module.backup[0].identity_id : var.backup_identity_id]
   }
 }
